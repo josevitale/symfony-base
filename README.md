@@ -1,4 +1,4 @@
-base
-====
+symfony-base
+============
 
-A Symfony project created on January 25, 2017, 10:21 am.
+Un repositorio base para comenzar a desarrollar una aplicación en el framework symfony.
