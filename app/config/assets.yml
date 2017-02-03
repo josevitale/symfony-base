@@ -1,0 +1,89 @@
+assetic:
+    assets:
+        jquery_js:
+            inputs:
+                - '%kernel.root_dir%/../vendor/components/jquery/jquery.min.js'
+            output:
+                'js/jquery.min.js'
+        # JQuery UI
+        jquery_ui_js:
+            inputs:
+                - '%kernel.root_dir%/../vendor/components/jqueryui/jquery-ui.min.js'
+            output:
+                'js/jquery-ui.min.js'
+        jquery_ui_css:
+            inputs:
+                - '%kernel.root_dir%/../vendor/components/jqueryui/themes/base/jquery-ui.min.css'
+            output:
+                'css/jquery-ui.min.css'
+        jquery_ui_images_1:
+            inputs:
+                - '%kernel.root_dir%/../vendor/components/jqueryui/themes/base/images/ui-bg_flat_0_aaaaaa_40x100.png'
+            output:
+                'css/images/ui-bg_flat_0_aaaaaa_40x100.png'
+        jquery_ui_images_2:
+            inputs:
+                - '%kernel.root_dir%/../vendor/components/jqueryui/themes/base/images/ui-icons_444444_256x240.png'
+            output:
+                'css/images/ui-icons_444444_256x240.png'
+        jquery_ui_images_3:
+            inputs:
+                - '%kernel.root_dir%/../vendor/components/jqueryui/themes/base/images/ui-icons_555555_256x240.png'
+            output:
+                'css/images/ui-icons_555555_256x240.png'
+        jquery_ui_images_4:
+            inputs:
+                - '%kernel.root_dir%/../vendor/components/jqueryui/themes/base/images/ui-icons_777620_256x240.png'
+            output:
+                'css/images/ui-icons_777620_256x240.png'
+        jquery_ui_images_5:
+            inputs:
+                - '%kernel.root_dir%/../vendor/components/jqueryui/themes/base/images/ui-icons_777777_256x240.png'
+            output:
+                'css/images/ui-icons_777777_256x240.png'
+        jquery_ui_images_6:
+            inputs:
+                - '%kernel.root_dir%/../vendor/components/jqueryui/themes/base/images/ui-icons_cc0000_256x240.png'
+            output:
+                'css/images/ui-icons_cc0000_256x240.png'
+        jquery_ui_images_7:
+            inputs:
+                - '%kernel.root_dir%/../vendor/components/jqueryui/themes/base/images/ui-icons_ffffff_256x240.png'
+            output:
+                'css/images/ui-icons_ffffff_256x240.png'
+        # Bootstrap
+        bootstrap_css:
+            inputs:
+                - '%kernel.root_dir%/../vendor/twbs/bootstrap/dist/css/bootstrap.min.css'
+            output:
+                'css/bootstrap.min.css'
+        bootstrap_js:
+            inputs:
+                - '%kernel.root_dir%/../vendor/twbs/bootstrap/dist/js/bootstrap.min.js'
+            output:
+                'js/bootstrap.min.js'
+        bootstrap_fonts_1:
+            inputs:
+                - '%kernel.root_dir%/../vendor/twbs/bootstrap/dist/fonts/glyphicons-halflings-regular.eot'
+            output:
+                'fonts/glyphicons-halflings-regular.eot'
+        bootstrap_fonts_2:
+            inputs:
+                - '%kernel.root_dir%/../vendor/twbs/bootstrap/dist/fonts/glyphicons-halflings-regular.svg'
+            output:
+                'fonts/glyphicons-halflings-regular.svg'
+        bootstrap_fonts_3:
+            inputs:
+                - '%kernel.root_dir%/../vendor/twbs/bootstrap/dist/fonts/glyphicons-halflings-regular.ttf'
+            output:
+                'fonts/glyphicons-halflings-regular.ttf'
+        bootstrap_fonts_4:
+            inputs:
+                - '%kernel.root_dir%/../vendor/twbs/bootstrap/dist/fonts/glyphicons-halflings-regular.woff'
+            output:
+                'fonts/glyphicons-halflings-regular.woff'
+        bootstrap_fonts_5:
+            inputs:
+                - '%kernel.root_dir%/../vendor/twbs/bootstrap/dist/fonts/glyphicons-halflings-regular.woff2'
+            output:
+                'fonts/glyphicons-halflings-regular.woff2'
