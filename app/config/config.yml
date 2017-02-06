@@ -78,3 +78,29 @@ assetic:
     use_controller: '%kernel.debug%'
     filters:
         cssrewrite: ~
+
+# FOSRest Configuration
+fos_rest:
+    view:
+        formats:
+            json: true
+            rss: false
+            xml: false
+        templating_formats:
+            html: true
+        force_redirects:
+            html: true
+        failed_validation: HTTP_BAD_REQUEST
+        default_engine: twig
+    format_listener:
+        enabled: true
+        rules:
+            - { path: '^/css', stop: true }
+            - { path: '^/js', stop: true }
+            - { path: '^/images', stop: true }
+            - { path: '^/fonts', stop: true }
+            - {
+                path: '^/',
+                priorities: ['json', 'html'],
+                fallback_format: json
+              }
