@@ -6,7 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>{% block title %}Welcome!{% endblock %}</title>
         {% block stylesheets %}
-            {% stylesheets 'css/bootstrap.min.css' filter='cssrewrite' output='css/base.css' %}
+            {% stylesheets '@bootstrap_css' filter='cssrewrite' output='css/base.css' %}
                 <link rel="stylesheet" href="{{ asset_url }}" />
             {% endstylesheets %}
         {% endblock %}
@@ -16,8 +16,8 @@
         {% block body %}{% endblock %}
         {% block javascripts %}
             {% javascripts
-                'js/jquery.min.js'
-                'js/bootstrap.min.js'
+                '@jquery_js'
+                '@bootstrap_js'
                 output='js/base.js'
             %}
                 <script src="{{ asset_url }}"></script>
