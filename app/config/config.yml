@@ -8,6 +8,7 @@ imports:
 # http://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
     locale: es
+    app.nombre: symfony-base
 
 framework:
     #esi:             ~
@@ -42,6 +43,8 @@ framework:
 twig:
     debug:            "%kernel.debug%"
     strict_variables: "%kernel.debug%"
+    globals:
+        app_nombre: "%app.nombre%"
 
 # Doctrine Configuration
 doctrine:
