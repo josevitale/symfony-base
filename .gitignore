@@ -5,6 +5,9 @@
 !/var/cache
 /var/cache/*
 !var/cache/.gitkeep
+!/var/data
+/var/data/*
+!var/data/.gitkeep
 !/var/logs
 /var/logs/*
 !var/logs/.gitkeep
@@ -71,10 +74,8 @@ Desktop.ini
 $RECYCLE.BIN/
  
 # Linux
-.*
 !.gitignore
 !.htaccess
-*~
 \.directory
  
 # Mac OS X
