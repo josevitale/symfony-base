@@ -116,3 +116,6 @@ fos_user:
     user_class: AppBundle\Entity\User
     group:
         group_class: AppBundle\Entity\Group
+    from_email:
+        address: correo@correo.com
+        sender_name: correo
