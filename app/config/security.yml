@@ -11,28 +11,20 @@ security:
             id: fos_user.user_provider.username
 
     firewalls:
-        # disables authentication for assets and the profiler, adapt it according to your needs
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
 
         main:
             pattern: ^/
-            form_login:
-                provider: fos_userbundle
-                csrf_token_generator: security.csrf.token_manager
-                login_path: fos_user_security_login
-                check_path: fos_user_security_check
-                # if you are using Symfony < 2.8, use the following config instead:
-                # csrf_provider: form.csrf_provider
-
             logout:
-                path:     fos_user_security_logout
+                path:     /logout
             anonymous:    true
+            guard:
+                authenticators:
+                    - app.security.login_form_authenticator
 
     access_control:
-        - { path: ^/user/login$, role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/user/register, role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/user/resetting, role: ROLE_ADMIN }
-        - { path: ^/group, role: ROLE_ADMIN }
-        - { path: ^/admin/, role: ROLE_ADMIN }
+        - { path: ^/login$, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/users, role: IS_AUTHENTICATED_FULLY }
+        - { path: ^/groups, role: IS_AUTHENTICATED_FULLY }

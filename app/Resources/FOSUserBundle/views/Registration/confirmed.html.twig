@@ -1,9 +1,0 @@
-{% extends "@FOSUser/layout.html.twig" %}
-{% block fos_user_content %}
-    <div class="alert alert-success" role="alert">
-        <p>{{ 'registration.confirmed'|trans({'%username%': user.username}) }}</p>
-        {% if targetUrl %}
-        <p><a href="{{ targetUrl }}" class="alert-link">{{ 'registration.back'|trans }}</a></p>
-        {% endif %}
-    </div>
-{% endblock fos_user_content %}

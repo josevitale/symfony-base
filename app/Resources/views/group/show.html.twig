@@ -1,0 +1,24 @@
+{% extends 'layout.html.twig' %}
+
+{% block contenido %}
+    <h1>{{ 'group.show.titulo'|trans }}</h1>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>{{ 'group.list.id'|trans }}</th><th>{{ 'group.list.name'|trans }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{ group.id }}</td><td>{{ group.name }}</td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+            <a class="btn btn-primary" href="{{ path('group_edit', { 'id': group.id }) }}" role="button">{{ 'general.modificar'|trans }}</a>
+            <a class="btn btn-danger" href="{{ path('group_remove', { 'id': group.id }) }}" role="button">{{ 'general.eliminar'|trans }}</a>
+            <a class="btn btn-primary" href="{{ path('group_list') }}" role="button">{{ 'general.volver'|trans }}</a>
+        </div>
+    </div>
+{% endblock %}
