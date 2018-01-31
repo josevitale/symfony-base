@@ -30,10 +30,6 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
 
     public function getCredentials(Request $request)
     {
-        $isLoginSubmit = $request->attributes->get('_route') === 'security_login' && $request->isMethod('POST');
-        if (!$isLoginSubmit) {
-            return;
-        }
         $form = $this->formFactory->create(LoginType::class);
         $form->handleRequest($request);
         $data = $form->getData();
@@ -72,5 +68,10 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
     protected function getDefaultSuccessRedirectUrl()
     {
         return $this->router->generate('homepage');
+    }
+
+    public function supports(Request $request)
+    {
+        return $request->attributes->get('_route') === 'security_login' && $request->isMethod('POST');;
     }
 }
