@@ -31,6 +31,7 @@ class AppTestCase extends WebTestCase
         $user = new User();
         $user->setUsername($username);
         $user->setEmail($username.'@foo.com');
+        $user->setRoles(array('ROLE_ADMIN'));
         $password = $this->client->getContainer()->get('security.password_encoder')
             ->encodePassword($user, $plainPassword);
         $user->setPassword($password);
