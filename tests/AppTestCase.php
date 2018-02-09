@@ -3,6 +3,9 @@
 namespace Tests;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\BrowserKit\Cookie;
+use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
+use AppBundle\Entity\User;
 
 class AppTestCase extends WebTestCase
 {
@@ -17,5 +20,46 @@ class AppTestCase extends WebTestCase
     protected function setUp()
     {
         $this->client = self::$staticClient;
+    }
+
+    protected function tearDown()
+    {
+    }
+
+    protected function createUser($username, $plainPassword = 'foo')
+    {
+        $user = new User();
+        $user->setUsername($username);
+        $user->setEmail($username.'@foo.com');
+        $password = $this->client->getContainer()->get('security.password_encoder')
+            ->encodePassword($user, $plainPassword);
+        $user->setPassword($password);
+        $em = $this->client->getContainer()->get('doctrine')->getManager();
+        $em->persist($user);
+        $em->flush();
+
+        return $user;
+    }
+
+    protected function deleteUser($username)
+    {
+        $em = $this->client->getContainer()->get('doctrine')->getManager();
+        $user = $em->getRepository('AppBundle:User')->findOneByUsername($username);
+        $em->remove($user);
+        $em->flush();
+    }
+
+    public function logIn()
+    {
+        $session = $this->client->getContainer()->get('session');
+        $em = $this->client->getContainer()->get('doctrine')->getManager();
+        $user = $em->getRepository('AppBundle:User')->findOneByUsername('test');
+
+        $token = new UsernamePasswordToken($user, null, 'main', array('ROLE_ADMIN'));
+        $session->set('_security_main', serialize($token));
+        $session->save();
+
+        $cookie = new Cookie($session->getName(), $session->getId());
+        $this->client->getCookieJar()->set($cookie);
     }
 }
