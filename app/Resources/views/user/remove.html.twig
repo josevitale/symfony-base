@@ -1,15 +1,15 @@
 {% extends 'layout.html.twig' %}
 
 {% block contenido %}
-    <h1>{{ 'user.remove.titulo'|trans }}</h1>
+    <h1 id="user_remove_titulo">{{ 'user.remove.titulo'|trans }}</h1>
     <div class="alert alert-warning" role="alert">
         <strong>{{ 'user.remove.advertencia'|trans({'%username%': user.username}) }}</strong>
     </div>
     {{ form_start(form, {'action': path('user_delete', { 'id': user.id }), 'method': 'DELETE', 'attr': {'class': 'form-horizontal'}}) }}
         <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10">
-                <button type="submit" class="btn btn-danger">{{ 'general.submit'|trans }}</button>
-                <a class="btn btn-primary" href="{{ path('user_list') }}" role="button">{{ 'general.cancelar'|trans }}</a>
+                <button id="user_remove_aceptar" type="submit" class="btn btn-danger">{{ 'general.submit'|trans }}</button>
+                <a id="user_remove_cancelar" class="btn btn-primary" href="{{ path('user_list') }}" role="button">{{ 'general.cancelar'|trans }}</a>
             </div>
         </div>
     {{ form_end(form) }}
