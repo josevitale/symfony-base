@@ -37,8 +37,8 @@ class GroupControllerTest extends AppTestCase
         $this->assertNotNull($testGroup);
 
         $crawlerAceptar = $this->client->followRedirect();
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode(), "[GET /groups/show] StatusCode inesperado");
-        $this->assertEquals(1, $crawlerAceptar->filter('#group_show_titulo')->count(), "[GET /groups/show] Elemento html no encotrado: 'group_show_titulo'");
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode(), "[GET /groups/{id}] StatusCode inesperado");
+        $this->assertEquals(1, $crawlerAceptar->filter('#group_show_titulo')->count(), "[GET /groups/{id}] Elemento html no encotrado: 'group_show_titulo'");
         $crawlerCancelar = $this->client->click($linkCancelar);
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode(), "[GET /groups/] StatusCode inesperado");
         $this->assertEquals(1, $crawlerCancelar->filter('#group_list_titulo')->count(), "[GET /groups/] Elemento html no encotrado: 'group_list_titulo'");
@@ -111,8 +111,8 @@ class GroupControllerTest extends AppTestCase
         $this->assertNotNull($testGroup);
 
         $crawlerAceptar = $this->client->followRedirect();
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode(), "[GET /groups/show] StatusCode inesperado");
-        $this->assertEquals(1, $crawlerAceptar->filter('#group_show_titulo')->count(), "[GET /groups/show] Elemento html no encotrado: 'group_show_titulo'");
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode(), "[GET /groups/{id}] StatusCode inesperado");
+        $this->assertEquals(1, $crawlerAceptar->filter('#group_show_titulo')->count(), "[GET /groups/{id}] Elemento html no encotrado: 'group_show_titulo'");
         $crawlerCancelar = $this->client->click($linkCancelar);
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode(), "[GET /groups/] StatusCode inesperado");
         $this->assertEquals(1, $crawlerCancelar->filter('#group_list_titulo')->count(), "[GET /groups/] Elemento html no encotrado: 'group_list_titulo'");
