@@ -54,16 +54,16 @@ class GroupControllerTest extends AppTestCase
         $this->assertEquals(1, $crawler->filter('#group_show_titulo')->count(), "[GET /groups/{id}] Elemento html no encotrado: 'group_show_titulo'");
         $this->assertEquals(1, $crawler->filter('#group_show_edit')->count(), "[GET /groups/{id}] Elemento html no encotrado: 'group_show_edit'");
         $this->assertEquals(1, $crawler->filter('#group_show_remove')->count(), "[GET /groups/{id}] Elemento html no encotrado: 'group_show_remove'");
-        $this->assertEquals(1, $crawler->filter('#group_show_list')->count(), "[GET /groups/{id}] Elemento html no encotrado: 'group_show_list'");
+        $this->assertEquals(1, $crawler->filter('#group_show_salir')->count(), "[GET /groups/{id}] Elemento html no encotrado: 'group_show_salir'");
         $linkEdit = $crawler->filter('#group_show_edit')->link();
         $crawlerEdit = $this->client->click($linkEdit);
         $this->assertEquals(1, $crawlerEdit->filter('#group_edit_titulo')->count(), "[GET /groups/{id}/edit] Elemento html no encotrado: 'group_edit_titulo'");
         $linkRemove = $crawler->filter('#group_show_remove')->link();
         $crawlerRemove = $this->client->click($linkRemove);
         $this->assertEquals(1, $crawlerRemove->filter('#group_remove_titulo')->count(), "[GET /groups/{id}/remove] Elemento html no encotrado: 'group_remove_titulo'");
-        $linkList = $crawler->filter('#group_show_list')->link();
-        $crawlerList = $this->client->click($linkList);
-        $this->assertEquals(1, $crawlerList->filter('#group_list_titulo')->count(), "[GET /groups/] Elemento html no encotrado: 'group_list_titulo'");
+        $linkSalir = $crawler->filter('#group_show_salir')->link();
+        $crawlerSalir = $this->client->click($linkSalir);
+        $this->assertEquals(1, $crawlerSalir->filter('#group_list_titulo')->count(), "[GET /groups/] Elemento html no encotrado: 'group_list_titulo'");
     }
 
     public function testWebList()
