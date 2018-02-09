@@ -1,15 +1,15 @@
 {% extends 'layout.html.twig' %}
 
 {% block contenido %}
-    <h1>{{ 'group.remove.titulo'|trans }}</h1>
+    <h1 id="group_remove_titulo">{{ 'group.remove.titulo'|trans }}</h1>
     <div class="alert alert-warning" role="alert">
         <strong>{{ 'group.remove.advertencia'|trans({'%name%': group.name}) }}</strong>
     </div>
     {{ form_start(form, {'action': path('group_delete', { 'id': group.id }), 'method': 'DELETE', 'attr': {'class': 'form-horizontal'}}) }}
         <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10">
-                <button type="submit" class="btn btn-danger">{{ 'general.submit'|trans }}</button>
-                <a class="btn btn-primary" href="{{ path('group_list') }}" role="button">{{ 'general.cancelar'|trans }}</a>
+                <button id="group_remove_aceptar" type="submit" class="btn btn-danger">{{ 'general.submit'|trans }}</button>
+                <a id="group_remove_cancelar" class="btn btn-primary" href="{{ path('group_list') }}" role="button">{{ 'general.cancelar'|trans }}</a>
             </div>
         </div>
     {{ form_end(form) }}

@@ -1,7 +1,7 @@
 {% extends 'layout.html.twig' %}
 
 {% block contenido %}
-    <h1>{{ 'group.new.titulo'|trans }}</h1>
+    <h1 id="group_new_titulo">{{ 'group.new.titulo'|trans }}</h1>
     {{ form_start(form, {'action': path('group_create'), 'method': 'POST', 'attr': {'class': 'form-horizontal'}}) }}
         {% if not form.vars.valid %}
             <div class="alert alert-danger" role="alert">
@@ -16,8 +16,8 @@
         </div>
         <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10">
-                <button type="submit" class="btn btn-primary">{{ 'general.submit'|trans }}</button>
-                <a class="btn btn-primary" href="{{ path('group_list') }}" role="button">{{ 'general.cancelar'|trans }}</a>
+                <button id="group_new_aceptar" type="submit" class="btn btn-primary">{{ 'general.submit'|trans }}</button>
+                <a id="group_new_cancelar" class="btn btn-primary" href="{{ path('group_list') }}" role="button">{{ 'general.cancelar'|trans }}</a>
             </div>
         </div>
     {{ form_end(form) }}
