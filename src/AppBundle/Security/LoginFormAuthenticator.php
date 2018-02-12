@@ -3,7 +3,9 @@
 namespace AppBundle\Security;
 
 use Symfony\Component\Security\Guard\Authenticator\AbstractFormLoginAuthenticator;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Form\FormFactoryInterface;
@@ -65,9 +67,9 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
         return $this->router->generate('security_login');
     }
 
-    protected function getDefaultSuccessRedirectUrl()
+    public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
     {
-        return $this->router->generate('homepage');
+        return new RedirectResponse($this->router->generate('homepage'));
     }
 
     public function supports(Request $request)
