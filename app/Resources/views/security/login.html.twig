@@ -8,7 +8,7 @@
 {% endblock %}
 {% block contenido %}
     {{ form_start(form, {'attr': {'class': 'form-signin'}}) }}
-        <h2 class="form-signin-heading">{{ 'security.solicitud_credenciales'|trans }}</h2>
+        <h2 id="security_login_titulo" class="form-signin-heading">{{ 'security.solicitud_credenciales'|trans }}</h2>
         {{ form_label(form._username, 'security.username'|trans, {'label_attr': {'class': 'sr-only'}}) }}
         {{ form_widget(form._username, {'attr': {'class': 'form-control', 'placeholder': 'security.username'|trans}}) }}
         {{ form_label(form._password, 'security.password'|trans, {'label_attr': {'class': 'sr-only'}}) }}
@@ -20,6 +20,6 @@
               </div>
             </div>
         {% endif %}
-        <button class="btn btn-lg btn-primary btn-block" type="submit" id="_submit" name="_submit">{{ 'security.login'|trans }}</button>
+        <button id="security_login_login" class="btn btn-lg btn-primary btn-block" type="submit" id="_submit" name="_submit">{{ 'security.login'|trans }}</button>
     {{ form_end(form) }}
 {% endblock %}
