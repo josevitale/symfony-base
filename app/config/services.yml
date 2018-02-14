@@ -1,6 +1,11 @@
 parameters:
 
 services:
+#Factories
+    app.response.response_factory:
+        class: AppBundle\Response\ResponseFactory
+        arguments: ['@service_container']
+
     app.security.app_authenticator:
         class: AppBundle\Security\AppAuthenticator
         autowire: true
