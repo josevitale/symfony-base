@@ -1,3 +1,6 @@
+imports:
+    - { resource: "../Resources/config/services/eventos.yml" }
+
 parameters:
 
 services:
