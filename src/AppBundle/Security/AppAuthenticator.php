@@ -2,10 +2,12 @@
 
 namespace AppBundle\Security;
 
-use Symfony\Component\Security\Guard\Authenticator\AbstractFormLoginAuthenticator;
+use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Form\FormFactoryInterface;
@@ -14,13 +16,16 @@ use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoder;
 use AppBundle\Form\LoginType;
 use Symfony\Component\Security\Core\Security;
+use Symfony\Component\Security\Http\Util\TargetPathTrait;
 
-class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
+class AppAuthenticator extends AbstractGuardAuthenticator
 {
     private $formFactory;
     private $em;
     private $router;
     private $passwordEncoder;
+
+    use TargetPathTrait;
 
     public function __construct(FormFactoryInterface $formFactory, EntityManager $em, RouterInterface $router, UserPasswordEncoder $passwordEncoder)
     {
@@ -67,6 +72,17 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
         return $this->router->generate('security_login');
     }
 
+    public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
+    {
+        if ($request->getSession() instanceof SessionInterface) {
+            $request->getSession()->set(Security::AUTHENTICATION_ERROR, $exception);
+        }
+
+        $url = $this->getLoginUrl();
+
+        return new RedirectResponse($url);
+    }
+
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
     {
         return new RedirectResponse($this->router->generate('homepage'));
@@ -75,5 +91,17 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
     public function supports(Request $request)
     {
         return $request->attributes->get('_route') === 'security_login' && $request->isMethod('POST');;
+    }
+
+    public function supportsRememberMe()
+    {
+        return false;
+    }
+
+    public function start(Request $request, AuthenticationException $authException = null)
+    {
+        $url = $this->getLoginUrl();
+
+        return new RedirectResponse($url);
     }
 }

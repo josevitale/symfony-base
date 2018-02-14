@@ -1,6 +1,6 @@
 parameters:
 
 services:
-    app.security.login_form_authenticator:
-        class: AppBundle\Security\LoginFormAuthenticator
+    app.security.app_authenticator:
+        class: AppBundle\Security\AppAuthenticator
         autowire: true
