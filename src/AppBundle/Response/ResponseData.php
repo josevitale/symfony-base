@@ -18,17 +18,10 @@ class ResponseData
      */
     protected $datos;
 
-    /**
-     *
-     * @var Form
-     */
-    protected $form;
-
-    public function __construct($datos = array(), $statusCode = 200, $form = null)
+    public function __construct($datos = array(), $statusCode = 200)
     {
         $this->statusCode = $statusCode;
         $this->datos = $datos;
-        $this->form = $form;
     }
 
     public function getStatusCode()
@@ -41,11 +34,6 @@ class ResponseData
         return $this->datos;
     }
 
-    public function getForm()
-    {
-        return $this->form;
-    }
-
     public function set($nombre, $valor)
     {
         $this->datos[$nombre] = $valor;
@@ -53,6 +41,11 @@ class ResponseData
 
     public function toArray()
     {
-        return $this->getDatos();
+        return array_merge(
+            array(
+                'statusCode' => $this->getStatusCode(),
+            ),
+            $this->getDatos()
+        );
     }
 }
