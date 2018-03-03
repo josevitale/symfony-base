@@ -37,11 +37,10 @@ class ResponseError extends ResponseData
     {
         return array_merge(
             array(
-                'statusCode' => $this->getStatusCode(),
                 'tipo' => $this->getTipo(),
                 'titulo' => $this->getTitulo(),
             ),
-            $this->getDatos()
+            parent::toArray()
         );
     }
 }
