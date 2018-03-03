@@ -5,9 +5,11 @@ namespace AppBundle\Response;
 class ResponseError extends ResponseData
 {
     const ERROR_VALIDACION = 'error_validacion';
+    const ERROR_CREDENCIALES = 'error_credenciales';
 
     protected static $titulos = array(
         self::ERROR_VALIDACION => 'Hubo un error de validación',
+        self::ERROR_CREDENCIALES => 'Usuario o contraseña incorrectos',
     );
 
     protected $tipo;
