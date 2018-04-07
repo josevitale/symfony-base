@@ -49,7 +49,7 @@ class ResponseFactory
                 $view = $controllerConfig[$controller['action']]['template_error'];
             }
         }
-        $renderView = $this->container->get('templating')->render($view, $responseData->toArray());
+        $renderView = $this->container->get('templating')->render($view, $responseData->getDatos());
         $response = new Response($renderView, $responseData->getStatusCode());
         $response->headers->set('Content-Type', 'text/html');
 
@@ -59,7 +59,7 @@ class ResponseFactory
     protected function crearJsonResponse(Request $request, ResponseData $responseData)
     {
         $response = new JsonResponse(
-            $responseData->toArray(),
+            $responseData->toDatos(),
             $responseData->getStatusCode()
         );
         if ($responseData instanceof ResponseError) {
