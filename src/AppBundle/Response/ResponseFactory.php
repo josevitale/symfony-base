@@ -3,7 +3,6 @@
 namespace AppBundle\Response;
 
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Yaml\Yaml;
@@ -58,8 +57,9 @@ class ResponseFactory
 
     protected function crearJsonResponse(Request $request, ResponseData $responseData)
     {
-        $response = new JsonResponse(
-            $responseData->toDatos(),
+        $serializer = $this->container->get('serializer');
+        $response = new Response(
+            $serializer->serialize($responseData->toDatos(), 'json'),
             $responseData->getStatusCode()
         );
         if ($responseData instanceof ResponseError) {
