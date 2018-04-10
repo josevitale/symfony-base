@@ -6,13 +6,18 @@ use AppBundle\Entity\Group;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use AppBundle\Form\GroupType;
+use AppBundle\Response\ResponseError;
+use AppBundle\Exception\ErrorException;
 
 class GroupController extends Controller
 {
     public function listAction()
     {
-        $translator = $this->get('translator');
-        $this->denyAccessUnlessGranted('ROLE_ADMIN', null, $translator->trans('general.acceso_denegado'));
+        if (!$this->isGranted('ROLE_ADMIN')) {
+            $error = new ResponseError(403, ResponseError::ERROR_ACCESO_DENEGADO);
+
+            throw new ErrorException($error);
+        }
 
         $em = $this->getDoctrine()->getManager();
         $groups = $em->getRepository('AppBundle:Group')->findAll();
@@ -24,8 +29,11 @@ class GroupController extends Controller
 
     public function newAction(Request $request)
     {
-        $translator = $this->get('translator');
-        $this->denyAccessUnlessGranted('ROLE_ADMIN', null, $translator->trans('general.acceso_denegado'));
+        if (!$this->isGranted('ROLE_ADMIN')) {
+            $error = new ResponseError(403, ResponseError::ERROR_ACCESO_DENEGADO);
+
+            throw new ErrorException($error);
+        }
 
         $groupManager = $this->get('fos_user.group_manager');
         $group = $groupManager->createGroup('');
@@ -40,8 +48,11 @@ class GroupController extends Controller
 
     public function createAction(Request $request)
     {
-        $translator = $this->get('translator');
-        $this->denyAccessUnlessGranted('ROLE_ADMIN', null, $translator->trans('general.acceso_denegado'));
+        if (!$this->isGranted('ROLE_ADMIN')) {
+            $error = new ResponseError(403, ResponseError::ERROR_ACCESO_DENEGADO);
+
+            throw new ErrorException($error);
+        }
 
         $groupManager = $this->get('fos_user.group_manager');
         $group = $groupManager->createGroup('');
@@ -65,8 +76,11 @@ class GroupController extends Controller
 
     public function showAction(Group $group)
     {
-        $translator = $this->get('translator');
-        $this->denyAccessUnlessGranted('ROLE_ADMIN', null, $translator->trans('general.acceso_denegado'));
+        if (!$this->isGranted('ROLE_ADMIN')) {
+            $error = new ResponseError(403, ResponseError::ERROR_ACCESO_DENEGADO);
+
+            throw new ErrorException($error);
+        }
 
         return $this->render('group/show.html.twig', array(
             'group' => $group,
@@ -75,8 +89,11 @@ class GroupController extends Controller
 
     public function editAction(Request $request, Group $group)
     {
-        $translator = $this->get('translator');
-        $this->denyAccessUnlessGranted('ROLE_ADMIN', null, $translator->trans('general.acceso_denegado'));
+        if (!$this->isGranted('ROLE_ADMIN')) {
+            $error = new ResponseError(403, ResponseError::ERROR_ACCESO_DENEGADO);
+
+            throw new ErrorException($error);
+        }
 
         $form = $this->createForm(GroupType::class, $group, array(
             'method' => 'PUT',
@@ -91,8 +108,11 @@ class GroupController extends Controller
 
     public function updateAction(Request $request, Group $group)
     {
-        $translator = $this->get('translator');
-        $this->denyAccessUnlessGranted('ROLE_ADMIN', null, $translator->trans('general.acceso_denegado'));
+        if (!$this->isGranted('ROLE_ADMIN')) {
+            $error = new ResponseError(403, ResponseError::ERROR_ACCESO_DENEGADO);
+
+            throw new ErrorException($error);
+        }
 
         $form = $this->createForm(GroupType::class, $group, array(
             'method' => 'PUT',
@@ -116,8 +136,11 @@ class GroupController extends Controller
 
     public function removeAction(Request $request, Group $group)
     {
-        $translator = $this->get('translator');
-        $this->denyAccessUnlessGranted('ROLE_ADMIN', null, $translator->trans('general.acceso_denegado'));
+        if (!$this->isGranted('ROLE_ADMIN')) {
+            $error = new ResponseError(403, ResponseError::ERROR_ACCESO_DENEGADO);
+
+            throw new ErrorException($error);
+        }
 
         $form = $this->createFormBuilder()->setMethod('DELETE')->getForm();
         $form->handleRequest($request);
@@ -130,8 +153,11 @@ class GroupController extends Controller
 
     public function deleteAction(Request $request, Group $group)
     {
-        $translator = $this->get('translator');
-        $this->denyAccessUnlessGranted('ROLE_ADMIN', null, $translator->trans('general.acceso_denegado'));
+        if (!$this->isGranted('ROLE_ADMIN')) {
+            $error = new ResponseError(403, ResponseError::ERROR_ACCESO_DENEGADO);
+
+            throw new ErrorException($error);
+        }
 
         $form = $this->createFormBuilder()->setMethod('DELETE')->getForm();
         $form->handleRequest($request);

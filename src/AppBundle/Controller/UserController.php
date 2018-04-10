@@ -5,16 +5,20 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use AppBundle\Form\UserType;
+use AppBundle\Response\ResponseError;
+use AppBundle\Exception\ErrorException;
 
 class UserController extends Controller
 {
 
     public function listAction()
     {
-        $translator = $this->get('translator');
-        $this->denyAccessUnlessGranted('ROLE_ADMIN', null, $translator->trans('general.acceso_denegado'));
+        if (!$this->isGranted('ROLE_ADMIN')) {
+            $error = new ResponseError(403, ResponseError::ERROR_ACCESO_DENEGADO);
+
+            throw new ErrorException($error);
+        }
 
         $em = $this->getDoctrine()->getManager();
         $users = $em->getRepository('AppBundle:User')->findAll();
@@ -26,8 +30,11 @@ class UserController extends Controller
 
     public function newAction(Request $request)
     {
-        $translator = $this->get('translator');
-        $this->denyAccessUnlessGranted('ROLE_ADMIN', null, $translator->trans('general.acceso_denegado'));
+        if (!$this->isGranted('ROLE_ADMIN')) {
+            $error = new ResponseError(403, ResponseError::ERROR_ACCESO_DENEGADO);
+
+            throw new ErrorException($error);
+        }
 
         $user = new User();
         $form = $this->createForm(UserType::class, $user);
@@ -41,8 +48,11 @@ class UserController extends Controller
 
     public function createAction(Request $request)
     {
-        $translator = $this->get('translator');
-        $this->denyAccessUnlessGranted('ROLE_ADMIN', null, $translator->trans('general.acceso_denegado'));
+        if (!$this->isGranted('ROLE_ADMIN')) {
+            $error = new ResponseError(403, ResponseError::ERROR_ACCESO_DENEGADO);
+
+            throw new ErrorException($error);
+        }
 
         $user = new User();
         $form = $this->createForm(UserType::class, $user);
@@ -65,9 +75,10 @@ class UserController extends Controller
 
     public function showAction(User $user)
     {
-        $translator = $this->get('translator');
         if (!$this->getUser()->hasRole('ROLE_ADMIN') && $this->getUser()->getId() !== $user->getId()) {
-            throw new AccessDeniedException($translator->trans('general.acceso_denegado'));
+            $error = new ResponseError(403, ResponseError::ERROR_ACCESO_DENEGADO);
+
+            throw new ErrorException($error);
         }
 
         return $this->render('user/show.html.twig', array(
@@ -77,9 +88,10 @@ class UserController extends Controller
 
     public function editAction(Request $request, User $user)
     {
-        $translator = $this->get('translator');
         if (!$this->getUser()->hasRole('ROLE_ADMIN') && $this->getUser()->getId() !== $user->getId()) {
-            throw new AccessDeniedException($translator->trans('general.acceso_denegado'));
+            $error = new ResponseError(403, ResponseError::ERROR_ACCESO_DENEGADO);
+
+            throw new ErrorException($error);
         }
 
         $form = $this->createForm(UserType::class, $user, array(
@@ -95,9 +107,10 @@ class UserController extends Controller
 
     public function updateAction(Request $request, User $user)
     {
-        $translator = $this->get('translator');
         if (!$this->getUser()->hasRole('ROLE_ADMIN') && $this->getUser()->getId() !== $user->getId()) {
-            throw new AccessDeniedException($translator->trans('general.acceso_denegado'));
+            $error = new ResponseError(403, ResponseError::ERROR_ACCESO_DENEGADO);
+
+            throw new ErrorException($error);
         }
 
         $form = $this->createForm(UserType::class, $user, array(
@@ -122,8 +135,11 @@ class UserController extends Controller
 
     public function removeAction(Request $request, User $user)
     {
-        $translator = $this->get('translator');
-        $this->denyAccessUnlessGranted('ROLE_ADMIN', null, $translator->trans('general.acceso_denegado'));
+        if (!$this->isGranted('ROLE_ADMIN')) {
+            $error = new ResponseError(403, ResponseError::ERROR_ACCESO_DENEGADO);
+
+            throw new ErrorException($error);
+        }
 
         $form = $this->createFormBuilder()->setMethod('DELETE')->getForm();
         $form->handleRequest($request);
@@ -136,8 +152,11 @@ class UserController extends Controller
 
     public function deleteAction(Request $request, User $user)
     {
-        $translator = $this->get('translator');
-        $this->denyAccessUnlessGranted('ROLE_ADMIN', null, $translator->trans('general.acceso_denegado'));
+        if (!$this->isGranted('ROLE_ADMIN')) {
+            $error = new ResponseError(403, ResponseError::ERROR_ACCESO_DENEGADO);
+
+            throw new ErrorException($error);
+        }
 
         $form = $this->createFormBuilder()->setMethod('DELETE')->getForm();
         $form->handleRequest($request);
