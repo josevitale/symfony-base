@@ -6,10 +6,12 @@ class ResponseError extends ResponseData
 {
     const ERROR_VALIDACION = 'error_validacion';
     const ERROR_CREDENCIALES = 'error_credenciales';
+    const ERROR_ACCESO_DENEGADO = 'error_acceso_denegado';
 
     protected static $titulos = array(
         self::ERROR_VALIDACION => 'Hubo un error de validación',
         self::ERROR_CREDENCIALES => 'Usuario o contraseña incorrectos',
+        self::ERROR_ACCESO_DENEGADO => 'No tiene permisos para realizar esta operación',
     );
 
     protected $tipo;
