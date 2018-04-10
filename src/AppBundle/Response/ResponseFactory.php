@@ -48,7 +48,7 @@ class ResponseFactory
                 $view = $controllerConfig[$controller['action']]['template_error'];
             }
         }
-        $renderView = $this->container->get('templating')->render($view, $responseData->getDatos());
+        $renderView = $this->container->get('templating')->render($view, $responseData->toArray());
         $response = new Response($renderView, $responseData->getStatusCode());
         $response->headers->set('Content-Type', 'text/html');
 
@@ -59,7 +59,7 @@ class ResponseFactory
     {
         $serializer = $this->container->get('serializer');
         $response = new Response(
-            $serializer->serialize($responseData->toDatos(), 'json'),
+            $serializer->serialize($responseData->toArray(), 'json'),
             $responseData->getStatusCode()
         );
         if ($responseData instanceof ResponseError) {
