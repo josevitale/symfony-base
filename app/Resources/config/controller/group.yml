@@ -1,0 +1,30 @@
+list:
+    accept: ['text/html', 'application/json']
+    template: "group/list.html.twig"
+
+new:
+    accept: ['text/html']
+    template: "group/new.html.twig"
+
+create:
+    accept: ['text/html', 'application/json']
+    template_error: "group/new.html.twig"
+
+show:
+    accept: ['text/html', 'application/json']
+    template: "group/show.html.twig"
+
+edit:
+    accept: ['text/html']
+    template: "group/edit.html.twig"
+
+update:
+    accept: ['text/html', 'application/json']
+    template_error: "group/edit.html.twig"
+
+remove:
+    accept: ['text/html']
+    template: "group/remove.html.twig"
+
+delete:
+    accept: ['text/html', 'application/json']

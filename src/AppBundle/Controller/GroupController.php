@@ -6,6 +6,7 @@ use AppBundle\Entity\Group;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use AppBundle\Form\GroupType;
+use AppBundle\Response\ResponseData;
 use AppBundle\Response\ResponseError;
 use AppBundle\Exception\ErrorException;
 
@@ -22,7 +23,7 @@ class GroupController extends Controller
         $em = $this->getDoctrine()->getManager();
         $groups = $em->getRepository('AppBundle:Group')->findAll();
 
-        return $this->render('group/list.html.twig', array(
+        return new ResponseData(array(
             'groups' => $groups,
         ));
     }
@@ -39,11 +40,10 @@ class GroupController extends Controller
         $group = $groupManager->createGroup('');
         $form = $this->createForm(GroupType::class, $group);
         $form->handleRequest($request);
+        $response = new ResponseData();
+        $response->setForm($form->createView());
 
-        return $this->render('group/new.html.twig', array(
-            'group' => $group,
-            'form' => $form->createView(),
-        ));
+        return $response;
     }
 
     public function createAction(Request $request)
@@ -63,15 +63,17 @@ class GroupController extends Controller
             $groupManager = $this->get('fos_user.group_manager');
             $groupManager->updateGroup($group);
             $translator = $this->get('translator');
-            $this->addFlash('success', $translator->trans('group.new.grupo_creado'));
+            $response = new ResponseData(array(), 201);
+            $response->addMensaje('success', $translator->trans('group.new.grupo_creado'));
+            $response->setHeader('Location', $this->generateUrl('group_show', array('id' => $group->getId())));
+            $response->redirect($this->generateUrl('group_show', array('id' => $group->getId())));
 
-            return $this->redirectToRoute('group_show', array('id' => $group->getId()));
+            return $response;
         }
+        $response = new ResponseError(400, ResponseError::ERROR_VALIDACION);
+        $response->set('form', $form->createView());
 
-        return $this->render('group/new.html.twig', array(
-            'group' => $group,
-            'form' => $form->createView(),
-        ));
+        return $response;
     }
 
     public function showAction(Group $group)
@@ -82,7 +84,7 @@ class GroupController extends Controller
             throw new ErrorException($error);
         }
 
-        return $this->render('group/show.html.twig', array(
+        return new ResponseData(array(
             'group' => $group,
         ));
     }
@@ -99,11 +101,12 @@ class GroupController extends Controller
             'method' => 'PUT',
         ));
         $form->handleRequest($request);
-
-        return $this->render('group/edit.html.twig', array(
+        $response = new ResponseData(array(
             'group' => $group,
-            'form' => $form->createView(),
         ));
+        $response->setForm($form->createView());
+
+        return $response;
     }
 
     public function updateAction(Request $request, Group $group)
@@ -123,15 +126,17 @@ class GroupController extends Controller
             $groupManager = $this->get('fos_user.group_manager');
             $groupManager->updateGroup($group);
             $translator = $this->get('translator');
-            $this->addFlash('success', $translator->trans('group.edit.grupo_modificado'));
+            $response = new ResponseData();
+            $response->addMensaje('success', $translator->trans('group.edit.grupo_modificado'));
+            $response->redirect($this->generateUrl('group_show', array('id' => $group->getId())));
 
-            return $this->redirectToRoute('group_show', array('id' => $group->getId()));
+            return $response;
         }
+        $response = new ResponseError(400, ResponseError::ERROR_VALIDACION);
+        $response->set('group', $group);
+        $response->set('form', $form->createView());
 
-        return $this->render('group/edit.html.twig', array(
-            'group' => $group,
-            'form' => $form->createView(),
-        ));
+        return $response;
     }
 
     public function removeAction(Request $request, Group $group)
@@ -144,11 +149,12 @@ class GroupController extends Controller
 
         $form = $this->createFormBuilder()->setMethod('DELETE')->getForm();
         $form->handleRequest($request);
-
-        return $this->render('group/remove.html.twig', array(
+        $response = new ResponseData(array(
             'group' => $group,
-            'form' => $form->createView(),
         ));
+        $response->setForm($form->createView());
+
+        return $response;
     }
 
     public function deleteAction(Request $request, Group $group)
@@ -166,9 +172,14 @@ class GroupController extends Controller
             $groupManager = $this->get('fos_user.group_manager');
             $groupManager->deleteGroup($group);
             $translator = $this->get('translator');
-            $this->addFlash('success', $translator->trans('group.remove.grupo_eliminado'));
+            $response = new ResponseData(array(), 204);
+            $response->addMensaje('success', $translator->trans('group.remove.grupo_eliminado'));
         }
+        else {
+            $response = new ResponseError(400, ResponseError::ERROR_VALIDACION);
+        }
+        $response->redirect($this->generateUrl('group_list'));
 
-        return $this->redirectToRoute('group_list');
+        return $response;
     }
 }

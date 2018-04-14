@@ -6,6 +6,7 @@ use AppBundle\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use AppBundle\Form\UserType;
+use AppBundle\Response\ResponseData;
 use AppBundle\Response\ResponseError;
 use AppBundle\Exception\ErrorException;
 
@@ -23,7 +24,7 @@ class UserController extends Controller
         $em = $this->getDoctrine()->getManager();
         $users = $em->getRepository('AppBundle:User')->findAll();
 
-        return $this->render('user/list.html.twig', array(
+        return new ResponseData(array(
             'users' => $users,
         ));
     }
@@ -40,10 +41,10 @@ class UserController extends Controller
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
 
-        return $this->render('user/new.html.twig', array(
-            'user' => $user,
-            'form' => $form->createView(),
-        ));
+        $response = new ResponseData();
+        $response->setForm($form->createView());
+
+        return $response;
     }
 
     public function createAction(Request $request)
@@ -62,15 +63,17 @@ class UserController extends Controller
             $userManager = $this->get('fos_user.user_manager');
             $userManager->updateUser($user);
             $translator = $this->get('translator');
-            $this->addFlash('success', $translator->trans('user.new.usuario_creado'));
+            $response = new ResponseData(array(), 201);
+            $response->addMensaje('success', $translator->trans('user.new.usuario_creado'));
+            $response->setHeader('Location', $this->generateUrl('user_show', array('id' => $user->getId())));
+            $response->redirect($this->generateUrl('user_show', array('id' => $user->getId())));
 
-            return $this->redirectToRoute('user_show', array('id' => $user->getId()));
+            return $response;
         }
+        $response = new ResponseError(400, ResponseError::ERROR_VALIDACION);
+        $response->set('form', $form->createView());
 
-        return $this->render('user/new.html.twig', array(
-            'user' => $user,
-            'form' => $form->createView(),
-        ));
+        return $response;
     }
 
     public function showAction(User $user)
@@ -81,7 +84,7 @@ class UserController extends Controller
             throw new ErrorException($error);
         }
 
-        return $this->render('user/show.html.twig', array(
+        return new ResponseData(array(
             'user' => $user,
         ));
     }
@@ -98,11 +101,12 @@ class UserController extends Controller
             'method' => 'PUT',
         ));
         $form->handleRequest($request);
-
-        return $this->render('user/edit.html.twig', array(
+        $response = new ResponseData(array(
             'user' => $user,
-            'form' => $form->createView(),
         ));
+        $response->setForm($form->createView());
+
+        return $response;
     }
 
     public function updateAction(Request $request, User $user)
@@ -122,15 +126,17 @@ class UserController extends Controller
             $userManager = $this->get('fos_user.user_manager');
             $userManager->updateUser($user);
             $translator = $this->get('translator');
-            $this->addFlash('success', $translator->trans('user.edit.usuario_modificado'));
+            $response = new ResponseData();
+            $response->addMensaje('success', $translator->trans('user.edit.usuario_modificado'));
+            $response->redirect($this->generateUrl('user_show', array('id' => $user->getId())));
 
-            return $this->redirectToRoute('user_show', array('id' => $user->getId()));
+            return $response;
         }
+        $response = new ResponseError(400, ResponseError::ERROR_VALIDACION);
+        $response->set('user', $user);
+        $response->set('form', $form->createView());
 
-        return $this->render('user/edit.html.twig', array(
-            'user' => $user,
-            'form' => $form->createView(),
-        ));
+        return $response;
     }
 
     public function removeAction(Request $request, User $user)
@@ -143,11 +149,12 @@ class UserController extends Controller
 
         $form = $this->createFormBuilder()->setMethod('DELETE')->getForm();
         $form->handleRequest($request);
-
-        return $this->render('user/remove.html.twig', array(
+        $response = new ResponseData(array(
             'user' => $user,
-            'form' => $form->createView(),
         ));
+        $response->setForm($form->createView());
+
+        return $response;
     }
 
     public function deleteAction(Request $request, User $user)
@@ -165,9 +172,14 @@ class UserController extends Controller
             $userManager = $this->get('fos_user.user_manager');
             $userManager->deleteUser($user);
             $translator = $this->get('translator');
-            $this->addFlash('success', $translator->trans('user.remove.usuario_eliminado'));
+            $response = new ResponseData(array(), 204);
+            $response->addMensaje('success', $translator->trans('user.remove.usuario_eliminado'));
         }
+        else {
+            $response = new ResponseError(400, ResponseError::ERROR_VALIDACION);
+        }
+        $response->redirect($this->generateUrl('user_list'));
 
-        return $this->redirectToRoute('user_list');
+        return $response;
     }
 }
