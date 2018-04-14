@@ -2,7 +2,7 @@
 
 namespace AppBundle\Response;
 
-use Symfony\Component\Form\Form;
+use Symfony\Component\Form\FormView;
 
 class ResponseData
 {
@@ -18,10 +18,36 @@ class ResponseData
      */
     protected $datos;
 
-    public function __construct($datos = array(), $statusCode = 200)
+    /**
+     *
+     * @var array
+     */
+    protected $headers;
+
+    /**
+     *
+     * @var FormView
+     */
+    protected $form;
+
+    /**
+     *
+     * @var array
+     */
+    protected $mensajes;
+
+    /**
+     *
+     * @var ResponseData
+     */
+    protected $redirect;
+
+    public function __construct($datos = array(), $statusCode = 200, $headers = array())
     {
         $this->statusCode = $statusCode;
         $this->datos = $datos;
+        $this->headers = $headers;
+        $this->mensajes = array();
     }
 
     public function getStatusCode()
@@ -39,11 +65,88 @@ class ResponseData
         $this->datos[$nombre] = $valor;
     }
 
+    public function getHeaders()
+    {
+        return $this->headers;
+    }
+
+    public function getHeader($nombre)
+    {
+        if (!array_key_exists($nombre, $this->headers)) {
+
+            return null;
+        }
+
+        return $this->headers[$nombre];
+    }
+
+    public function setHeader($nombre, $valor)
+    {
+        $this->headers[$nombre] = $valor;
+    }
+
+    public function getForm()
+    {
+        return $this->form;
+    }
+
+    public function setForm(FormView $form)
+    {
+        $this->form = $form;
+
+        return $this;
+    }
+
+    public function getRedirect()
+    {
+        return $this->redirect;
+    }
+
+    public function setRedirect($redirect)
+    {
+        $this->redirect = $redirect;
+
+        return $this;
+    }
+
+    public function hasToRedirect()
+    {
+        return null !== $this->redirect;
+    }
+
+    public function getMensajes()
+    {
+        return $this->mensajes;
+    }
+
+    public function addMensaje($tipo, $mensaje)
+    {
+        if (array_key_exists($tipo, $this->mensajes)) {
+            $this->mensajes[$tipo][] = $mensaje;
+        }
+        else {
+            $this->mensajes[$tipo] = array($mensaje);
+        }
+
+        return $this;
+    }
+
+    public function redirect($url, $status = 302)
+    {
+        $responseRedirect = new ResponseData(Array(), $status);
+        $responseRedirect->setHeader('Location', $url);
+        $this->redirect = $responseRedirect;
+
+        return $this;
+    }
+
     public function toArray()
     {
         return array_merge(
             array(
                 'statusCode' => $this->getStatusCode(),
+                'form' => $this->getForm(),
+                'mensajes' => $this->getMensajes(),
             ),
             $this->getDatos()
         );
