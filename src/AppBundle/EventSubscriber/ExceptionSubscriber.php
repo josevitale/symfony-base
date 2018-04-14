@@ -5,8 +5,10 @@ namespace AppBundle\EventSubscriber;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
+use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use AppBundle\Exception\ErrorException;
 use AppBundle\Response\ResponseFactory;
+use AppBundle\Response\ResponseError;
 
 class ExceptionSubscriber implements EventSubscriberInterface
 {
@@ -27,10 +29,14 @@ class ExceptionSubscriber implements EventSubscriberInterface
     public function onKernelException(GetResponseForExceptionEvent $event)
     {
         $exception = $event->getException();
-        if (!$exception instanceof ErrorException) {
-            return;
+        if ($exception instanceof ErrorException) {
+            $responseError = $exception->getResponseError();
         }
-        $response = $this->responseFactory->crearResponse($event->getRequest(), $exception->getResponseError());
+        else {
+            $statusCode = $exception instanceof HttpExceptionInterface ? $exception->getStatusCode() : 500;
+            $responseError = new ResponseError($statusCode);
+        }
+        $response = $this->responseFactory->crearResponse($event->getRequest(), $responseError);
         $event->setResponse($response);
     }
 }
