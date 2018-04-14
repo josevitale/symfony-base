@@ -5,7 +5,9 @@ namespace AppBundle\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Yaml\Yaml;
+use AppBundle\Exception\ErrorException;
 
 class ResponseFactory
 {
@@ -33,24 +35,18 @@ class ResponseFactory
 
     protected function crearHtmlResponse(Request $request, ResponseData $responseData)
     {
-        $controllerRequest = explode("Controller::", $request->attributes->get('_controller'));
-        $controllerRequest[0] = explode("\\", $controllerRequest[0]);
-        $controllerRequest[0] = $controllerRequest[0][count($controllerRequest[0]) - 1];
-        $controller = array(
-            'controller' => strtolower($controllerRequest[0]),
-            'action' => str_replace('Action', '', $controllerRequest[1]),
-        );
-        $controllerConfig = Yaml::parseFile($this->container->get('kernel')->getRootDir() . '/Resources/config/controller/' . $controller['controller'] . '.yml');
-        $view = $controllerConfig[$controller['action']]['template'];
-        if ($responseData instanceof ResponseError) {
-            $view = 'error.html.twig';
-            if (array_key_exists('template_error', $controllerConfig[$controller['action']])) {
-                $view = $controllerConfig[$controller['action']]['template_error'];
-            }
+        if ($responseData->isRedirection() || $responseData->hasToRedirect()){
+            $response = $this->getRedirectResponse($responseData);
         }
-        $renderView = $this->container->get('templating')->render($view, $responseData->toArray());
-        $response = new Response($renderView, $responseData->getStatusCode());
-        $response->headers->set('Content-Type', 'text/html');
+        elseif ($responseData->isSuccess() || $responseData->isError()) {
+            $response = $this->getRenderResponse($request, $responseData);
+        }
+        else {
+            $responseError = new ResponseError(500, ResponseError::ERROR_APLICACION);
+
+            throw new ErrorException($responseError);
+        }
+        $this->addFlashes($responseData);
 
         return $response;
     }
@@ -67,6 +63,88 @@ class ResponseFactory
         }
         else {
             $response->headers->set('Content-Type', 'application/json');
+        }
+
+        return $response;
+    }
+
+    protected function addFlashes(ResponseData $responseData)
+    {
+        if (!$this->container->has('session')) {
+            return;
+        }
+        $mensajes = $responseData->getMensajes();
+        foreach (array_keys($mensajes) as $tipo) {
+            foreach ($mensajes[$tipo] as $mensaje) {
+                $this->container->get('session')->getFlashBag()->add($tipo, $mensaje);
+            }
+        }
+    }
+
+    protected function getControllerAction(Request $request)
+    {
+        $controllerRequest = explode("Controller::", $request->attributes->get('_controller'));
+        $controllerRequest[0] = explode("\\", $controllerRequest[0]);
+        $controllerRequest[0] = $controllerRequest[0][count($controllerRequest[0]) - 1];
+        $controller = array(
+            'controller' => strtolower($controllerRequest[0]),
+            'action' => str_replace('Action', '', $controllerRequest[1]),
+        );
+
+        return $controller;
+    }
+
+    protected function getControllerConfig($controller)
+    {
+        $controllerConfigFile = $this->container->get('kernel')->getRootDir() . '/Resources/config/controller/' . $controller['controller'] . '.yml';
+        if (file_exists($controllerConfigFile)) {
+            $controllerConfig = Yaml::parseFile($controllerConfigFile);
+        }
+        else {
+            $controllerConfig = null;
+        }
+
+        return $controllerConfig;
+    }
+
+    protected function getRenderResponse(Request $request, ResponseData $responseData)
+    {
+        $controller = $this->getControllerAction($request);
+        $controllerConfig = $this->getControllerConfig($controller);
+        if ($responseData->isError()) {
+            $view = 'error.html.twig';
+            if ($controllerConfig && array_key_exists('template_error', $controllerConfig[$controller['action']])) {
+                $view = $controllerConfig[$controller['action']]['template_error'];
+            }
+        }
+        elseif ($responseData->isSuccess() && $controllerConfig && array_key_exists('template', $controllerConfig[$controller['action']])) {
+            $view = $controllerConfig[$controller['action']]['template'];
+        }
+        else {
+            $responseError = new ResponseError(500, ResponseError::ERROR_APLICACION);
+
+            throw new ErrorException($responseError);
+        }
+        $renderView = $this->container->get('templating')->render($view, $responseData->toArray());
+        $response = new Response($renderView, $responseData->getStatusCode(), $responseData->getHeaders());
+        $response->headers->set('Content-Type', 'text/html');
+
+        return $response;
+    }
+
+    protected function getRedirectResponse(ResponseData $responseData)
+    {
+        if ($responseData->isRedirection())
+        {
+            $response = new RedirectResponse($responseData->getHeader('Location'), $responseData->getStatusCode(), $responseData->getHeaders());
+        }
+        elseif ($responseData->hasToRedirect()) {
+            $response = new RedirectResponse($responseData->getRedirect()->getHeader('Location'), $responseData->getRedirect()->getStatusCode(), $responseData->getRedirect()->getHeaders());
+        }
+        else {
+            $responseError = new ResponseError(500, ResponseError::ERROR_APLICACION);
+
+            throw new ErrorException($responseError);
         }
 
         return $response;
