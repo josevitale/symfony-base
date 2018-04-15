@@ -111,16 +111,11 @@ class ResponseFactory
     {
         $controller = $this->getControllerAction($request);
         $controllerConfig = $this->getControllerConfig($controller);
-        if ($responseData->isError()) {
-            $view = 'error.html.twig';
-            if ($controllerConfig && array_key_exists('template_error', $controllerConfig[$controller['action']])) {
-                $view = $controllerConfig[$controller['action']]['template_error'];
-            }
-        }
-        elseif ($responseData->isSuccess() && $controllerConfig && array_key_exists('template', $controllerConfig[$controller['action']])) {
+        $view = 'error.html.twig';
+        if ($responseData->getEsControllerResponse() && $controllerConfig && array_key_exists('template', $controllerConfig[$controller['action']])) {
             $view = $controllerConfig[$controller['action']]['template'];
         }
-        else {
+        elseif(!$responseData->isError()) {
             $responseError = new ResponseError(500, ResponseError::ERROR_APLICACION);
 
             throw new ErrorException($responseError);
