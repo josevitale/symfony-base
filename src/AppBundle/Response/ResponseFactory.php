@@ -109,13 +109,8 @@ class ResponseFactory
 
     protected function getRenderResponse(Request $request, ResponseData $responseData)
     {
-        $controller = $this->getControllerAction($request);
-        $controllerConfig = $this->getControllerConfig($controller);
-        $view = 'error.html.twig';
-        if ($responseData->getEsControllerResponse() && $controllerConfig && array_key_exists('template', $controllerConfig[$controller['action']])) {
-            $view = $controllerConfig[$controller['action']]['template'];
-        }
-        elseif(!$responseData->isError()) {
+        $view = $this->getView($request, $responseData);
+        if(null === $view) {
             $responseError = new ResponseError(500, ResponseError::ERROR_APLICACION);
 
             throw new ErrorException($responseError);
@@ -125,6 +120,20 @@ class ResponseFactory
         $response->headers->set('Content-Type', 'text/html');
 
         return $response;
+    }
+
+    protected function getView(Request $request, ResponseData $responseData)
+    {
+        $controller = $this->getControllerAction($request);
+        $controllerConfig = $this->getControllerConfig($controller);
+        if ($responseData->isError() && !$responseData->isPostError()) {
+
+            return 'error.html.twig';
+        }
+        elseif ($controllerConfig && array_key_exists('template', $controllerConfig[$controller['action']])) {
+
+            return $controllerConfig[$controller['action']]['template'];
+        }
     }
 
     protected function getRedirectResponse(ResponseData $responseData)
