@@ -49,6 +49,11 @@ class ResponseError extends ResponseData
         return $this->titulo;
     }
 
+    public function isPostError()
+    {
+        return self::ERROR_CREDENCIALES === $this->getTipo() || self::ERROR_VALIDACION === $this->getTipo();
+    }
+
     public function toArray()
     {
         return array_merge(
