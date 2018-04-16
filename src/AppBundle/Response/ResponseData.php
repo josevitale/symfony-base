@@ -42,12 +42,6 @@ class ResponseData
      */
     protected $redirect;
 
-    /*
-     *
-     * @var boolean
-     */
-    protected $esControllerResponse;
-
     public function __construct($datos = array(), $statusCode = 200, $headers = array())
     {
         $this->statusCode = $statusCode;
@@ -134,18 +128,6 @@ class ResponseData
         else {
             $this->mensajes[$tipo] = array($mensaje);
         }
-
-        return $this;
-    }
-
-    public function getEsControllerResponse()
-    {
-        return $this->esControllerResponse;
-    }
-
-    public function setEsControllerResponse($esControllerResponse)
-    {
-        $this->esControllerResponse = $esControllerResponse;
 
         return $this;
     }

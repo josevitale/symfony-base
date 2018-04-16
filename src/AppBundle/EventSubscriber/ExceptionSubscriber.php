@@ -35,7 +35,6 @@ class ExceptionSubscriber implements EventSubscriberInterface
         else {
             $statusCode = $exception instanceof HttpExceptionInterface ? $exception->getStatusCode() : 500;
             $responseError = new ResponseError($statusCode);
-            $responseError->setEsControllerResponse(false);
         }
         $response = $this->responseFactory->crearResponse($event->getRequest(), $responseError);
         $event->setResponse($response);
