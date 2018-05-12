@@ -71,7 +71,7 @@ class UserController extends Controller
             return $response;
         }
         $response = new ResponseError(400, ResponseError::ERROR_VALIDACION);
-        $response->set('form', $form->createView());
+        $response->setForm($form->createView());
 
         return $response;
     }
@@ -134,7 +134,7 @@ class UserController extends Controller
         }
         $response = new ResponseError(400, ResponseError::ERROR_VALIDACION);
         $response->set('user', $user);
-        $response->set('form', $form->createView());
+        $response->setForm($form->createView());
 
         return $response;
     }
