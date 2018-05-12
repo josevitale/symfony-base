@@ -48,7 +48,6 @@ class ResponseData
         $this->datos = $datos;
         $this->headers = $headers;
         $this->mensajes = array();
-        $this->esControllerResponse = true;
     }
 
     public function getStatusCode()
