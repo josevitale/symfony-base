@@ -36,6 +36,7 @@ class ResponseFactory
 
     protected function crearHtmlResponse(Request $request, ResponseData $responseData)
     {
+        $this->addFlashes($responseData);
         if ($responseData->isRedirection() || $responseData->hasToRedirect()){
             $response = $this->getRedirectResponse($responseData);
         }
@@ -47,7 +48,6 @@ class ResponseFactory
 
             throw new ErrorException($responseError);
         }
-        $this->addFlashes($responseData);
 
         return $response;
     }
