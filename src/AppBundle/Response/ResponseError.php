@@ -3,6 +3,7 @@
 namespace AppBundle\Response;
 
 use Symfony\Component\HttpFoundation\Response;
+use AppBundle\Response\ResponseMensaje;
 
 class ResponseError extends ResponseData
 {
@@ -24,7 +25,9 @@ class ResponseError extends ResponseData
 
     protected $titulo;
 
-    public function __construct($statusCode, $tipo = self::ERROR_DESCONOCIDO) {
+    protected $errores;
+
+    public function __construct($statusCode, $tipo = self::ERROR_DESCONOCIDO, $errores = array()) {
         if (self::ERROR_DESCONOCIDO === $tipo) {
             $titulo = isset(Response::$statusTexts[$statusCode]) ? Response::$statusTexts[$statusCode] : self::$titulos[$tipo];
         }
@@ -37,6 +40,7 @@ class ResponseError extends ResponseData
         parent::__construct(array(), $statusCode);
         $this->tipo = $tipo;
         $this->titulo = $titulo;
+        $this->setErrores($errores);
     }
 
     public function getTipo()
@@ -47,6 +51,29 @@ class ResponseError extends ResponseData
     public function getTitulo()
     {
         return $this->titulo;
+    }
+
+    public function getErrores()
+    {
+        return $this->errores;
+    }
+
+    public function addError($error)
+    {
+        $this->errores[] = $error;
+        $this->addMensaje(ResponseMensaje::ERROR, $error);
+
+        return $this;
+    }
+
+    public function setErrores(array $errores)
+    {
+        $this->errores = array();
+        foreach ($errores as $error) {
+            $this->addError($error);
+        }
+
+        return $this;
     }
 
     public function isPostError()
@@ -60,6 +87,7 @@ class ResponseError extends ResponseData
             array(
                 'tipo' => $this->getTipo(),
                 'titulo' => $this->getTitulo(),
+                'errores' => $this->getErrores(),
             ),
             parent::toArray()
         );
