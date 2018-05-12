@@ -8,7 +8,7 @@ new:
 
 create:
     accept: ['text/html', 'application/json']
-    template_error: "user/new.html.twig"
+    template: "user/new.html.twig"
 
 show:
     accept: ['text/html', 'application/json']
@@ -20,7 +20,7 @@ edit:
 
 update:
     accept: ['text/html', 'application/json']
-    template_error: "user/edit.html.twig"
+    template: "user/edit.html.twig"
 
 remove:
     accept: ['text/html']
