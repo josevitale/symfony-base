@@ -75,7 +75,7 @@ class GroupControllerTest extends AppTestCase
         $form['appbundle_group[name]'] = 'WebTestGroupNew';
         $crawlerSubmit = $this->client->submit($form);
         $this->assertEquals(400, $this->client->getResponse()->getStatusCode(), "[POST /groups/create] StatusCode inesperado");
-        $this->assertEquals(1, $crawlerSubmit->filter('#form_errors')->count(), "[GET /groups/create] Elemento html no encotrado: 'form_errors'");
+        $this->assertGreaterThan(0, $crawlerSubmit->filter('.alert-danger')->count(), "[GET /groups/create] Clase html no encontrada: 'alert-danger'");
     }
 
     public function testWebList()

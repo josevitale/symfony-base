@@ -85,7 +85,7 @@ class UserControllerTest extends AppTestCase
         $form['appbundle_user[plainPassword][second]'] = 'WebTestUserNew';
         $crawlerSubmit = $this->client->submit($form);
         $this->assertEquals(400, $this->client->getResponse()->getStatusCode(), "[POST /users/create] StatusCode inesperado");
-        $this->assertEquals(1, $crawlerSubmit->filter('#form_errors')->count(), "[GET /users/create] Elemento html no encotrado: 'form_errors'");
+        $this->assertGreaterThan(0, $crawlerSubmit->filter('.alert-danger')->count(), "[GET /users/create] Clase html no encontrada: 'alert-danger'");
     }
 
     public function testWebList()

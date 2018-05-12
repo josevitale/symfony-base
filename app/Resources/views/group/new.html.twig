@@ -3,11 +3,6 @@
 {% block contenido %}
     <h1 id="group_new_titulo">{{ 'group.new.titulo'|trans }}</h1>
     {{ form_start(form, {'action': path('group_create'), 'method': 'POST', 'attr': {'class': 'form-horizontal'}}) }}
-        {% if not form.vars.valid %}
-            <div id="form_errors" class="alert alert-danger" role="alert">
-                {{ form_errors(form) }}
-            </div>
-        {% endif %}
         <div class="form-group">
             {{ form_label(form.name, 'group.type.name'|trans, {'label_attr': {'class': 'col-sm-2 control-label'}}) }}
             <div class="col-sm-10">
