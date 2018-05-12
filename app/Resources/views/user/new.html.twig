@@ -4,7 +4,7 @@
     <h1 id="user_new_titulo">{{ 'user.new.titulo'|trans }}</h1>
     {{ form_start(form, {'action': path('user_create'), 'method': 'POST', 'attr': {'class': 'form-horizontal'}}) }}
         {% if not form.vars.valid %}
-            <div class="alert alert-danger" role="alert">
+            <div id="form_errors" class="alert alert-danger" role="alert">
                 {{ form_errors(form) }}
             </div>
         {% endif %}
