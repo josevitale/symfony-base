@@ -42,7 +42,7 @@ class GroupController extends Controller
         $form = $this->createForm(GroupType::class, $group);
         $form->handleRequest($request);
         $response = new ResponseData();
-        $response->setForm($form->createView());
+        $response->setForm($form);
 
         return $response;
     }
@@ -72,7 +72,7 @@ class GroupController extends Controller
             return $response;
         }
         $response = new ResponseError(400, ResponseError::ERROR_VALIDACION);
-        $response->setForm($form->createView());
+        $response->setForm($form);
 
         return $response;
     }
@@ -105,7 +105,7 @@ class GroupController extends Controller
         $response = new ResponseData(array(
             'group' => $group,
         ));
-        $response->setForm($form->createView());
+        $response->setForm($form);
 
         return $response;
     }
@@ -135,7 +135,7 @@ class GroupController extends Controller
         }
         $response = new ResponseError(400, ResponseError::ERROR_VALIDACION);
         $response->set('group', $group);
-        $response->setForm($form->createView());
+        $response->setForm($form);
 
         return $response;
     }
@@ -153,7 +153,7 @@ class GroupController extends Controller
         $response = new ResponseData(array(
             'group' => $group,
         ));
-        $response->setForm($form->createView());
+        $response->setForm($form);
 
         return $response;
     }

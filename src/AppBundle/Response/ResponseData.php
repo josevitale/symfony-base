@@ -2,7 +2,7 @@
 
 namespace AppBundle\Response;
 
-use Symfony\Component\Form\FormView;
+use Symfony\Component\Form\FormInterface;
 
 class ResponseData
 {
@@ -26,7 +26,7 @@ class ResponseData
 
     /**
      *
-     * @var FormView
+     * @var FormInterface
      */
     protected $form;
 
@@ -90,7 +90,7 @@ class ResponseData
         return $this->form;
     }
 
-    public function setForm(FormView $form)
+    public function setForm(FormInterface $form)
     {
         $this->form = $form;
 

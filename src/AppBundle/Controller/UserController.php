@@ -43,7 +43,7 @@ class UserController extends Controller
         $form->handleRequest($request);
 
         $response = new ResponseData();
-        $response->setForm($form->createView());
+        $response->setForm($form);
 
         return $response;
     }
@@ -72,7 +72,7 @@ class UserController extends Controller
             return $response;
         }
         $response = new ResponseError(400, ResponseError::ERROR_VALIDACION);
-        $response->setForm($form->createView());
+        $response->setForm($form);
 
         return $response;
     }
@@ -105,7 +105,7 @@ class UserController extends Controller
         $response = new ResponseData(array(
             'user' => $user,
         ));
-        $response->setForm($form->createView());
+        $response->setForm($form);
 
         return $response;
     }
@@ -135,7 +135,7 @@ class UserController extends Controller
         }
         $response = new ResponseError(400, ResponseError::ERROR_VALIDACION);
         $response->set('user', $user);
-        $response->setForm($form->createView());
+        $response->setForm($form);
 
         return $response;
     }
@@ -153,7 +153,7 @@ class UserController extends Controller
         $response = new ResponseData(array(
             'user' => $user,
         ));
-        $response->setForm($form->createView());
+        $response->setForm($form);
 
         return $response;
     }

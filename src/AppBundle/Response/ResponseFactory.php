@@ -2,10 +2,11 @@
 
 namespace AppBundle\Response;
 
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Yaml\Yaml;
 use AppBundle\Exception\ErrorException;
 
@@ -115,7 +116,7 @@ class ResponseFactory
 
             throw new ErrorException($responseError);
         }
-        $renderView = $this->container->get('templating')->render($view, $responseData->toArray());
+        $renderView = $this->renderView($view, $responseData);
         $response = new Response($renderView, $responseData->getStatusCode(), $responseData->getHeaders());
         $response->headers->set('Content-Type', 'text/html');
 
@@ -134,6 +135,21 @@ class ResponseFactory
 
             return $controllerConfig[$controller['action']]['template'];
         }
+    }
+
+    protected function renderView($view, ResponseData $responseData)
+    {
+        $datos = array();
+        foreach ($responseData->toArray() as $key => $data) {
+            if ($data instanceof FormInterface) {
+                $datos[$key] = $data->createView();
+            }
+            else {
+                $datos[$key] = $data;
+            }
+        }
+
+        return $this->container->get('templating')->render($view, $datos);
     }
 
     protected function getRedirectResponse(ResponseData $responseData)
