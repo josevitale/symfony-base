@@ -2,13 +2,14 @@
 
 namespace AppBundle\Controller;
 
-use AppBundle\Entity\Group;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use AppBundle\Entity\Group;
+use AppBundle\Exception\ErrorException;
 use AppBundle\Form\GroupType;
 use AppBundle\Response\ResponseData;
 use AppBundle\Response\ResponseError;
-use AppBundle\Exception\ErrorException;
+use AppBundle\Response\ResponseMensaje;
 
 class GroupController extends Controller
 {
@@ -64,7 +65,7 @@ class GroupController extends Controller
             $groupManager->updateGroup($group);
             $translator = $this->get('translator');
             $response = new ResponseData(array(), 201);
-            $response->addMensaje('success', $translator->trans('group.new.grupo_creado'));
+            $response->addMensaje(ResponseMensaje::SUCCESS, $translator->trans('group.new.grupo_creado'));
             $response->setHeader('Location', $this->generateUrl('group_show', array('id' => $group->getId())));
             $response->redirect($this->generateUrl('group_show', array('id' => $group->getId())));
 
@@ -127,7 +128,7 @@ class GroupController extends Controller
             $groupManager->updateGroup($group);
             $translator = $this->get('translator');
             $response = new ResponseData();
-            $response->addMensaje('success', $translator->trans('group.edit.grupo_modificado'));
+            $response->addMensaje(ResponseMensaje::SUCCESS, $translator->trans('group.edit.grupo_modificado'));
             $response->redirect($this->generateUrl('group_show', array('id' => $group->getId())));
 
             return $response;
@@ -173,7 +174,7 @@ class GroupController extends Controller
             $groupManager->deleteGroup($group);
             $translator = $this->get('translator');
             $response = new ResponseData(array(), 204);
-            $response->addMensaje('success', $translator->trans('group.remove.grupo_eliminado'));
+            $response->addMensaje(ResponseMensaje::SUCCESS, $translator->trans('group.remove.grupo_eliminado'));
         }
         else {
             $response = new ResponseError(400, ResponseError::ERROR_VALIDACION);

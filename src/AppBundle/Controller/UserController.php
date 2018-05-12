@@ -2,13 +2,14 @@
 
 namespace AppBundle\Controller;
 
-use AppBundle\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use AppBundle\Entity\User;
+use AppBundle\Exception\ErrorException;
 use AppBundle\Form\UserType;
 use AppBundle\Response\ResponseData;
 use AppBundle\Response\ResponseError;
-use AppBundle\Exception\ErrorException;
+use AppBundle\Response\ResponseMensaje;
 
 class UserController extends Controller
 {
@@ -64,7 +65,7 @@ class UserController extends Controller
             $userManager->updateUser($user);
             $translator = $this->get('translator');
             $response = new ResponseData(array(), 201);
-            $response->addMensaje('success', $translator->trans('user.new.usuario_creado'));
+            $response->addMensaje(ResponseMensaje::SUCCESS, $translator->trans('user.new.usuario_creado'));
             $response->setHeader('Location', $this->generateUrl('user_show', array('id' => $user->getId())));
             $response->redirect($this->generateUrl('user_show', array('id' => $user->getId())));
 
@@ -127,7 +128,7 @@ class UserController extends Controller
             $userManager->updateUser($user);
             $translator = $this->get('translator');
             $response = new ResponseData();
-            $response->addMensaje('success', $translator->trans('user.edit.usuario_modificado'));
+            $response->addMensaje(ResponseMensaje::SUCCESS, $translator->trans('user.edit.usuario_modificado'));
             $response->redirect($this->generateUrl('user_show', array('id' => $user->getId())));
 
             return $response;
@@ -173,7 +174,7 @@ class UserController extends Controller
             $userManager->deleteUser($user);
             $translator = $this->get('translator');
             $response = new ResponseData(array(), 204);
-            $response->addMensaje('success', $translator->trans('user.remove.usuario_eliminado'));
+            $response->addMensaje(ResponseMensaje::SUCCESS, $translator->trans('user.remove.usuario_eliminado'));
         }
         else {
             $response = new ResponseError(400, ResponseError::ERROR_VALIDACION);
