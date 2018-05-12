@@ -66,6 +66,18 @@ class GroupControllerTest extends AppTestCase
         $this->assertEquals(1, $crawlerSalir->filter('#group_list_titulo')->count(), "[GET /groups/] Elemento html no encotrado: 'group_list_titulo'");
     }
 
+    public function testWebErrorCreateValidation()
+    {
+        $this->logIn();
+        $crawler = $this->client->request('GET', '/groups/new');
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode(), "[GET /groups/new] StatusCode inesperado");
+        $form = $crawler->filter('#group_new_aceptar')->form();
+        $form['appbundle_group[name]'] = 'WebTestGroupNew';
+        $crawlerSubmit = $this->client->submit($form);
+        $this->assertEquals(400, $this->client->getResponse()->getStatusCode(), "[POST /groups/create] StatusCode inesperado");
+        $this->assertEquals(1, $crawlerSubmit->filter('#form_errors')->count(), "[GET /groups/create] Elemento html no encotrado: 'form_errors'");
+    }
+
     public function testWebList()
     {
         $this->logIn();
@@ -141,5 +153,21 @@ class GroupControllerTest extends AppTestCase
         $crawlerCancelar = $this->client->click($linkCancelar);
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode(), "[GET /groups/] StatusCode inesperado");
         $this->assertEquals(1, $crawlerCancelar->filter('#group_list_titulo')->count(), "[GET /groups/] Elemento html no encotrado: 'group_list_titulo'");
+    }
+
+    public function testWebErrorAccesoDenegado()
+    {
+        $this->logIn(array('ROLE_USER'));
+        $crawler = $this->client->request('GET', '/groups/');
+        $this->assertEquals(403, $this->client->getResponse()->getStatusCode(), "[GET /groups/] StatusCode inesperado");
+        $this->assertEquals(1, $crawler->filter('#error_titulo')->count(), "[GET /groups/] Elemento html no encotrado: 'error_titulo'");
+    }
+
+    public function testWebErrorNoEncontrado()
+    {
+        $this->logIn();
+        $crawler = $this->client->request('GET', '/groups/-1');
+        $this->assertEquals(404, $this->client->getResponse()->getStatusCode(), "[GET /groups/-1] StatusCode inesperado");
+        $this->assertEquals(1, $crawler->filter('#error_titulo')->count(), "[GET /groups/-1] Elemento html no encotrado: 'error_titulo'");
     }
 }

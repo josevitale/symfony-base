@@ -73,6 +73,21 @@ class UserControllerTest extends AppTestCase
         $this->assertEquals(1, $crawlerSalir->filter('#user_list_titulo')->count(), "[GET /users/] Elemento html no encotrado: 'user_list_titulo'");
     }
 
+    public function testWebErrorCreateValidation()
+    {
+        $this->logIn();
+        $crawler = $this->client->request('GET', '/users/new');
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode(), "[GET /users/new] StatusCode inesperado");
+        $form = $crawler->filter('#user_new_aceptar')->form();
+        $form['appbundle_user[email]'] = 'webtestusernew@test';
+        $form['appbundle_user[username]'] = 'WebTestUserNew';
+        $form['appbundle_user[plainPassword][first]'] = 'WebTestUserNew';
+        $form['appbundle_user[plainPassword][second]'] = 'WebTestUserNew';
+        $crawlerSubmit = $this->client->submit($form);
+        $this->assertEquals(400, $this->client->getResponse()->getStatusCode(), "[POST /users/create] StatusCode inesperado");
+        $this->assertEquals(1, $crawlerSubmit->filter('#form_errors')->count(), "[GET /users/create] Elemento html no encotrado: 'form_errors'");
+    }
+
     public function testWebList()
     {
         $this->logIn();
@@ -159,5 +174,21 @@ class UserControllerTest extends AppTestCase
         $crawlerCancelar = $this->client->click($linkCancelar);
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode(), "[GET /users/] StatusCode inesperado");
         $this->assertEquals(1, $crawlerCancelar->filter('#user_list_titulo')->count(), "[GET /users/] Elemento html no encotrado: 'user_list_titulo'");
+    }
+
+    public function testWebErrorAccesoDenegado()
+    {
+        $this->logIn(array('ROLE_USER'));
+        $crawler = $this->client->request('GET', '/users/');
+        $this->assertEquals(403, $this->client->getResponse()->getStatusCode(), "[GET /users/] StatusCode inesperado");
+        $this->assertEquals(1, $crawler->filter('#error_titulo')->count(), "[GET /users/] Elemento html no encotrado: 'error_titulo'");
+    }
+
+    public function testWebErrorNoEncontrado()
+    {
+        $this->logIn();
+        $crawler = $this->client->request('GET', '/users/-1');
+        $this->assertEquals(404, $this->client->getResponse()->getStatusCode(), "[GET /users/-1] StatusCode inesperado");
+        $this->assertEquals(1, $crawler->filter('#error_titulo')->count(), "[GET /users/-1] Elemento html no encotrado: 'error_titulo'");
     }
 }
