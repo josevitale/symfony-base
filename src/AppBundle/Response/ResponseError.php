@@ -2,6 +2,7 @@
 
 namespace AppBundle\Response;
 
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Response;
 use AppBundle\Response\ResponseMensaje;
 
@@ -71,6 +72,16 @@ class ResponseError extends ResponseData
         $this->errores = array();
         foreach ($errores as $error) {
             $this->addError($error);
+        }
+
+        return $this;
+    }
+
+    public function setForm(FormInterface $form)
+    {
+        parent::setForm($form);
+        foreach ($form->getErrors(true) as $formError) {
+            $this->addError($formError->getMessage());
         }
 
         return $this;
