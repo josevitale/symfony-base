@@ -13,10 +13,10 @@
         {{ form_widget(form._username, {'attr': {'class': 'form-control', 'placeholder': 'security.username'|trans}}) }}
         {{ form_label(form._password, 'security.password'|trans, {'label_attr': {'class': 'sr-only'}}) }}
         {{ form_widget(form._password, {'attr': {'class': 'form-control', 'placeholder': 'security.password'|trans}}) }}
-        {% if error %}
+        {% if statusCode in (400..499) %}
             <div class="panel panel-danger">
               <div class="panel-heading">
-                {{ error.messageKey|trans(error.messageData, 'security') }}
+                {{ titulo|trans }}
               </div>
             </div>
         {% endif %}
