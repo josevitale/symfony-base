@@ -51,13 +51,13 @@ class AppTestCase extends WebTestCase
         $em->flush();
     }
 
-    public function logIn()
+    public function logIn(array $roles = array('ROLE_ADMIN'))
     {
         $session = $this->client->getContainer()->get('session');
         $em = $this->client->getContainer()->get('doctrine')->getManager();
         $user = $em->getRepository('AppBundle:User')->findOneByUsername('test');
 
-        $token = new UsernamePasswordToken($user, null, 'main', array('ROLE_ADMIN'));
+        $token = new UsernamePasswordToken($user, null, 'main', $roles);
         $session->set('_security_main', serialize($token));
         $session->save();
 
