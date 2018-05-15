@@ -4,12 +4,18 @@ namespace Tests;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\BrowserKit\Cookie;
+use Symfony\Component\BrowserKit\Client;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use AppBundle\Entity\User;
 
 class AppTestCase extends WebTestCase
 {
     private static $staticClient;
+
+    /**
+     *
+     * @var Client
+     */
     protected $client;
 
     public static function setUpBeforeClass()
