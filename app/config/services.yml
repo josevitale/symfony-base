@@ -12,3 +12,7 @@ services:
     app.security.form_authenticator:
         class: AppBundle\Security\FormAuthenticator
         autowire: true
+
+    app.security.token_authenticator:
+        class: AppBundle\Security\TokenAuthenticator
+        autowire: true
