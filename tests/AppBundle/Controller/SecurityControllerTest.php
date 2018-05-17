@@ -63,4 +63,26 @@ class SecurityControllerTest extends AppTestCase
         $this->assertEquals(1, $crawler->filter('#security_login_titulo')->count(), "[GET /login] Elemento html no encotrado: 'security_login_titulo'");
         $this->assertEquals(1, $crawler->filter('#security_login_login')->count(), "[GET /login] Elemento html no encotrado: 'security_login_login'");
     }
+
+    public function testJsonLogin()
+    {
+        $data = json_encode(array(
+            '_username' => 'test',
+            '_password' => 'foo',
+        ));
+        $crawler = $this->client->request('POST', '/login', array(), array(), array(
+            'CONTENT_TYPE' => 'application/json',
+            'HTTP_ACCEPT' => 'application/json',
+        ), $data);
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        $this->assertArrayHasKey('token', json_decode($this->client->getResponse()->getContent(), true));
+        $content = json_decode($this->client->getResponse()->getContent(), true);
+
+        $crawler = $this->client->request('GET', '/groups/', array(), array(), array(
+            'HTTP_AUTHORIZATION' => $content['token'],
+            'HTTP_ACCEPT' => 'application/json',
+        ));
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        $this->assertArrayHasKey('groups', json_decode($this->client->getResponse()->getContent(), true));
+    }
 }
