@@ -85,4 +85,17 @@ class SecurityControllerTest extends AppTestCase
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
         $this->assertArrayHasKey('groups', json_decode($this->client->getResponse()->getContent(), true));
     }
+
+    public function testJsonErrorLogin()
+    {
+        $data = json_encode(array(
+            '_username' => 'test',
+            '_password' => 'fool',
+        ));
+        $crawler = $this->client->request('POST', '/login', array(), array(), array(
+            'CONTENT_TYPE' => 'application/json',
+            'HTTP_ACCEPT' => 'application/json',
+        ), $data);
+        $this->assertEquals(401, $this->client->getResponse()->getStatusCode());
+    }
 }
