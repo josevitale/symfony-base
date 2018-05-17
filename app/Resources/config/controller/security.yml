@@ -1,0 +1,4 @@
+login:
+    accept: ['text/html', 'application/json']
+    template: "security/login.html.twig"
+    redirect: 'homepage'
