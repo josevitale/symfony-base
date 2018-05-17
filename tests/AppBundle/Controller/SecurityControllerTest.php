@@ -45,4 +45,22 @@ class SecurityControllerTest extends AppTestCase
         $this->assertEquals(1, $crawlerHome->filter('#homepage_titulo')->count(), "[GET /] Elemento html no encotrado: 'homepage_titulo'");
         $this->assertEquals(1, $crawlerHome->filter('#base_user_login')->count(), "[GET /] Elemento html no encotrado: 'base_user_login'");
     }
+
+    public function testWebErrorLogin()
+    {
+        $crawler = $this->client->request('GET', '/login');
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode(), "[GET /login] StatusCode inesperado");
+        $this->assertEquals(1, $crawler->filter('#security_login_titulo')->count(), "[GET /login] Elemento html no encotrado: 'security_login_titulo'");
+        $this->assertEquals(1, $crawler->filter('#security_login_login')->count(), "[GET /login] Elemento html no encotrado: 'security_login_login'");
+        $form = $crawler->filter('#security_login_login')->form();
+        $form['appbundle_login[_username]'] = 'test';
+        $form['appbundle_login[_password]'] = 'fool';
+        $this->client->submit($form);
+        $this->assertEquals(302, $this->client->getResponse()->getStatusCode(), "[POST /login] StatusCode inesperado");
+
+        $crawlerLogin = $this->client->followRedirect();
+        $this->assertEquals(401, $this->client->getResponse()->getStatusCode(), "[GET /login] StatusCode inesperado");
+        $this->assertEquals(1, $crawler->filter('#security_login_titulo')->count(), "[GET /login] Elemento html no encotrado: 'security_login_titulo'");
+        $this->assertEquals(1, $crawler->filter('#security_login_login')->count(), "[GET /login] Elemento html no encotrado: 'security_login_login'");
+    }
 }
