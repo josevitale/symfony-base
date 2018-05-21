@@ -3,6 +3,7 @@
 namespace AppBundle\Security;
 
 use Doctrine\ORM\EntityManager;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Form\FormFactoryInterface;
@@ -27,13 +28,19 @@ class FormAuthenticator extends AbstractGuardAuthenticator
     private $passwordEncoder;
     private $responseFactory;
 
-    public function __construct(FormFactoryInterface $formFactory, EntityManager $em, RouterInterface $router, UserPasswordEncoder $passwordEncoder, ResponseFactory $responseFactory)
+    /**
+     * @var ParameterBagInterface
+     */
+    private $parameterBag;
+
+    public function __construct(FormFactoryInterface $formFactory, EntityManager $em, RouterInterface $router, UserPasswordEncoder $passwordEncoder, ResponseFactory $responseFactory, ParameterBagInterface $parameterBag)
     {
         $this->formFactory = $formFactory;
         $this->em = $em;
         $this->router = $router;
         $this->passwordEncoder = $passwordEncoder;
         $this->responseFactory = $responseFactory;
+        $this->parameterBag = $parameterBag;
     }
 
     public function getCredentials(Request $request)
@@ -97,7 +104,12 @@ class FormAuthenticator extends AbstractGuardAuthenticator
         $response = new ResponseData();
         $response->redirect($this->router->generate('homepage'));
         if (in_array('application/json' , $request->getAcceptableContentTypes())) {
-            $response->set('token', serialize($token));
+            $payload = array(
+                '_username' => $token->getUser()->getUsername(),
+                'exp' => time() + 3600,
+            );
+            $password = $this->parameterBag->get('jwt_password');
+            $response->set('token', JWT::encode($payload, $password));
         }
 
         return $this->responseFactory->crearResponse($request, $response);

@@ -3,6 +3,7 @@
 namespace AppBundle\Security;
 
 use Doctrine\ORM\EntityManager;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoder;
@@ -19,18 +20,25 @@ class TokenAuthenticator extends AbstractGuardAuthenticator
     private $passwordEncoder;
     private $responseFactory;
 
-    public function __construct(EntityManager $em, UserPasswordEncoder $passwordEncoder, ResponseFactory $responseFactory)
+    /**
+     * @var ParameterBag
+     */
+    private $parameterBag;
+
+    public function __construct(EntityManager $em, UserPasswordEncoder $passwordEncoder, ResponseFactory $responseFactory, ParameterBag $parameterBag)
     {
         $this->em = $em;
         $this->passwordEncoder = $passwordEncoder;
         $this->responseFactory = $responseFactory;
+        $this->parameterBag = $parameterBag;
     }
 
     public function getCredentials(Request $request)
     {
         $token = $request->headers->get('Authorization');
-        $user = unserialize($token);
-        $data['_username'] = $user->getUsername();
+        $password = $this->parameterBag->get('jwt_password');
+        $payload = JWT::decode($token, $password);
+        $data['_username'] = $payload['_username'];
 
         return $data;
     }
