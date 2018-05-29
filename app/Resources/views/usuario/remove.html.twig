@@ -1,0 +1,16 @@
+{% extends 'layout.html.twig' %}
+
+{% block contenido %}
+    <h1 id="usuario_remove_titulo">{{ 'usuario.remove.titulo'|trans }}</h1>
+    <div class="alert alert-warning" role="alert">
+        <strong>{{ 'usuario.remove.advertencia'|trans({'%username%': usuario.username}) }}</strong>
+    </div>
+    {{ form_start(form, {'action': path('usuario_delete', { 'id': usuario.id }), 'method': 'DELETE', 'attr': {'class': 'form-horizontal'}}) }}
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button id="usuario_remove_aceptar" type="submit" class="btn btn-danger">{{ 'general.submit'|trans }}</button>
+                <a id="usuario_remove_cancelar" class="btn btn-primary" href="{{ path('usuario_list') }}" role="button">{{ 'general.cancelar'|trans }}</a>
+            </div>
+        </div>
+    {{ form_end(form) }}
+{% endblock %}

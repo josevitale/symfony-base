@@ -4,14 +4,14 @@ namespace AppBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
-use AppBundle\Entity\User;
+use AppBundle\Entity\Usuario;
 use AppBundle\Exception\ErrorException;
-use AppBundle\Form\UserType;
+use AppBundle\Form\UsuarioType;
 use AppBundle\Response\ResponseData;
 use AppBundle\Response\ResponseError;
 use AppBundle\Response\ResponseMensaje;
 
-class UserController extends Controller
+class UsuarioController extends Controller
 {
 
     public function listAction()
@@ -23,10 +23,10 @@ class UserController extends Controller
         }
 
         $em = $this->getDoctrine()->getManager();
-        $users = $em->getRepository('AppBundle:User')->findAll();
+        $usuarios = $em->getRepository('AppBundle:Usuario')->findAll();
 
         return new ResponseData(array(
-            'users' => $users,
+            'usuarios' => $usuarios,
         ));
     }
 
@@ -38,8 +38,8 @@ class UserController extends Controller
             throw new ErrorException($error);
         }
 
-        $user = new User();
-        $form = $this->createForm(UserType::class, $user);
+        $usuario = new Usuario();
+        $form = $this->createForm(UsuarioType::class, $usuario);
         $form->handleRequest($request);
 
         $response = new ResponseData();
@@ -56,18 +56,22 @@ class UserController extends Controller
             throw new ErrorException($error);
         }
 
-        $user = new User();
-        $form = $this->createForm(UserType::class, $user);
+        $usuario = new Usuario();
+        $form = $this->createForm(UsuarioType::class, $usuario);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $userManager = $this->get('fos_user.user_manager');
-            $userManager->updateUser($user);
+            $em = $this->getDoctrine()->getManager();
+            $password = $this->get('security.password_encoder')
+                ->encodePassword($usuario, $usuario->getPlainPassword());
+            $usuario->setPassword($password);
+            $em->persist($usuario);
+            $em->flush();
             $translator = $this->get('translator');
             $response = new ResponseData(array(), 201);
-            $response->addMensaje(ResponseMensaje::SUCCESS, $translator->trans('user.new.usuario_creado'));
-            $response->setHeader('Location', $this->generateUrl('user_show', array('id' => $user->getId())));
-            $response->redirect($this->generateUrl('user_show', array('id' => $user->getId())));
+            $response->addMensaje(ResponseMensaje::SUCCESS, $translator->trans('usuario.new.usuario_creado'));
+            $response->setHeader('Location', $this->generateUrl('usuario_show', array('id' => $usuario->getId())));
+            $response->redirect($this->generateUrl('usuario_show', array('id' => $usuario->getId())));
 
             return $response;
         }
@@ -77,70 +81,70 @@ class UserController extends Controller
         return $response;
     }
 
-    public function showAction(User $user)
+    public function showAction(Usuario $usuario)
     {
-        if (!$this->getUser()->hasRole('ROLE_ADMIN') && $this->getUser()->getId() !== $user->getId()) {
+        if (!$this->getUser()->hasRole('ROLE_ADMIN') && $this->getUser()->getId() !== $usuario->getId()) {
             $error = new ResponseError(403, ResponseError::ERROR_ACCESO_DENEGADO);
 
             throw new ErrorException($error);
         }
 
         return new ResponseData(array(
-            'user' => $user,
+            'usuario' => $usuario,
         ));
     }
 
-    public function editAction(Request $request, User $user)
+    public function editAction(Request $request, Usuario $usuario)
     {
-        if (!$this->getUser()->hasRole('ROLE_ADMIN') && $this->getUser()->getId() !== $user->getId()) {
+        if (!$this->getUser()->hasRole('ROLE_ADMIN') && $this->getUser()->getId() !== $usuario->getId()) {
             $error = new ResponseError(403, ResponseError::ERROR_ACCESO_DENEGADO);
 
             throw new ErrorException($error);
         }
 
-        $form = $this->createForm(UserType::class, $user, array(
+        $form = $this->createForm(UsuarioType::class, $usuario, array(
             'method' => 'PUT',
         ));
         $form->handleRequest($request);
         $response = new ResponseData(array(
-            'user' => $user,
+            'usuario' => $usuario,
         ));
         $response->setForm($form);
 
         return $response;
     }
 
-    public function updateAction(Request $request, User $user)
+    public function updateAction(Request $request, Usuario $usuario)
     {
-        if (!$this->getUser()->hasRole('ROLE_ADMIN') && $this->getUser()->getId() !== $user->getId()) {
+        if (!$this->getUser()->hasRole('ROLE_ADMIN') && $this->getUser()->getId() !== $usuario->getId()) {
             $error = new ResponseError(403, ResponseError::ERROR_ACCESO_DENEGADO);
 
             throw new ErrorException($error);
         }
 
-        $form = $this->createForm(UserType::class, $user, array(
+        $form = $this->createForm(UsuarioType::class, $usuario, array(
             'method' => 'PUT',
         ));
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $userManager = $this->get('fos_user.user_manager');
-            $userManager->updateUser($user);
+            $em = $this->getDoctrine()->getManager();
+            $em->flush();
             $translator = $this->get('translator');
             $response = new ResponseData();
-            $response->addMensaje(ResponseMensaje::SUCCESS, $translator->trans('user.edit.usuario_modificado'));
-            $response->redirect($this->generateUrl('user_show', array('id' => $user->getId())));
+            $response->addMensaje(ResponseMensaje::SUCCESS, $translator->trans('usuario.edit.usuario_modificado'));
+            $response->redirect($this->generateUrl('usuario_show', array('id' => $usuario->getId())));
 
             return $response;
         }
         $response = new ResponseError(400, ResponseError::ERROR_VALIDACION);
-        $response->set('user', $user);
+        $response->set('usuario', $usuario);
         $response->setForm($form);
 
         return $response;
     }
 
-    public function removeAction(Request $request, User $user)
+    public function removeAction(Request $request, Usuario $usuario)
     {
         if (!$this->isGranted('ROLE_ADMIN')) {
             $error = new ResponseError(403, ResponseError::ERROR_ACCESO_DENEGADO);
@@ -151,14 +155,14 @@ class UserController extends Controller
         $form = $this->createFormBuilder()->setMethod('DELETE')->getForm();
         $form->handleRequest($request);
         $response = new ResponseData(array(
-            'user' => $user,
+            'usuario' => $usuario,
         ));
         $response->setForm($form);
 
         return $response;
     }
 
-    public function deleteAction(Request $request, User $user)
+    public function deleteAction(Request $request, Usuario $usuario)
     {
         if (!$this->isGranted('ROLE_ADMIN')) {
             $error = new ResponseError(403, ResponseError::ERROR_ACCESO_DENEGADO);
@@ -170,16 +174,17 @@ class UserController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $userManager = $this->get('fos_user.user_manager');
-            $userManager->deleteUser($user);
+            $em = $this->getDoctrine()->getManager();
+            $em->remove($usuario);
+            $em->flush();
             $translator = $this->get('translator');
             $response = new ResponseData(array(), 204);
-            $response->addMensaje(ResponseMensaje::SUCCESS, $translator->trans('user.remove.usuario_eliminado'));
+            $response->addMensaje(ResponseMensaje::SUCCESS, $translator->trans('usuario.remove.usuario_eliminado'));
         }
         else {
             $response = new ResponseError(400, ResponseError::ERROR_VALIDACION);
         }
-        $response->redirect($this->generateUrl('user_list'));
+        $response->redirect($this->generateUrl('usuario_list'));
 
         return $response;
     }

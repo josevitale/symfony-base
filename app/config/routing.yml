@@ -5,10 +5,6 @@ app:
 security:
     resource: "config/routing/security.yml"
 
-user:
-    resource: "config/routing/user.yml"
-    prefix: /users
-
-groups:
-    resource: "config/routing/group.yml"
-    prefix: /groups
+usuarios:
+    resource: "config/routing/usuario.yml"
+    prefix: /usuarios

@@ -9,9 +9,9 @@ use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use AppBundle\Entity\User;
+use AppBundle\Entity\Usuario;
 
-class UserType extends AbstractType
+class UsuarioType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -24,7 +24,7 @@ class UserType extends AbstractType
             ))
             ->add('plainPassword', RepeatedType::class, array(
                 'type' => PasswordType::class,
-                'invalid_message' => 'fos_user.password.mismatch',
+                'invalid_message' => 'Las dos contraseñas no coinciden',
                 'error_bubbling' => true,
             ))
         ;
@@ -33,12 +33,12 @@ class UserType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => User::class,
+            'data_class' => Usuario::class,
         ));
     }
 
     public function getBlockPrefix()
     {
-        return 'appbundle_user';
+        return 'appbundle_usuario';
     }
 }

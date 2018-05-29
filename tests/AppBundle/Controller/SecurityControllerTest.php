@@ -9,13 +9,13 @@ class SecurityControllerTest extends AppTestCase
     protected function setUp()
     {
         parent::setUp();
-        $this->createUser('test');
+        $this->crearUsuario('test');
     }
 
     protected function tearDown()
     {
         parent::tearDown();
-        $this->deleteUser('test');
+        $this->eliminarUsuario('test');
     }
 
     public function testWebLogin()
@@ -34,7 +34,7 @@ class SecurityControllerTest extends AppTestCase
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode(), "[GET /] StatusCode inesperado");
         $this->assertEquals(1, $crawlerLogin->filter('#homepage_titulo')->count(), "[GET /] Elemento html no encotrado: 'homepage_titulo'");
         $this->assertEquals(1, $crawlerLogin->filter('#base_logged_in_as')->count(), "[GET /] Elemento html no encotrado: 'base_logged_in_as'");
-        $this->assertEquals(1, $crawlerLogin->filter('#base_user_edit')->count(), "[GET /] Elemento html no encotrado: 'base_user_edit'");
+        $this->assertEquals(1, $crawlerLogin->filter('#base_usuario_edit')->count(), "[GET /] Elemento html no encotrado: 'base_usuario_edit'");
         $this->assertEquals(1, $crawlerLogin->filter('#base_security_logout')->count(), "[GET /] Elemento html no encotrado: 'base_security_logout'");
 
         $linkLogout = $crawlerLogin->filter('#base_security_logout')->link();
@@ -43,7 +43,7 @@ class SecurityControllerTest extends AppTestCase
         $crawlerHome = $this->client->followRedirect();
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode(), "[GET /] StatusCode inesperado");
         $this->assertEquals(1, $crawlerHome->filter('#homepage_titulo')->count(), "[GET /] Elemento html no encotrado: 'homepage_titulo'");
-        $this->assertEquals(1, $crawlerHome->filter('#base_user_login')->count(), "[GET /] Elemento html no encotrado: 'base_user_login'");
+        $this->assertEquals(1, $crawlerHome->filter('#base_usuario_login')->count(), "[GET /] Elemento html no encotrado: 'base_usuario_login'");
     }
 
     public function testWebErrorLogin()
@@ -78,12 +78,12 @@ class SecurityControllerTest extends AppTestCase
         $this->assertArrayHasKey('token', json_decode($this->client->getResponse()->getContent(), true));
         $content = json_decode($this->client->getResponse()->getContent(), true);
 
-        $crawler = $this->client->request('GET', '/groups/', array(), array(), array(
+        $crawler = $this->client->request('GET', '/usuarios/', array(), array(), array(
             'HTTP_AUTHORIZATION' => $content['token'],
             'HTTP_ACCEPT' => 'application/json',
         ));
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
-        $this->assertArrayHasKey('groups', json_decode($this->client->getResponse()->getContent(), true));
+        $this->assertArrayHasKey('usuarios', json_decode($this->client->getResponse()->getContent(), true));
     }
 
     public function testJsonErrorLogin()

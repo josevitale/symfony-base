@@ -80,14 +80,3 @@ assetic:
     use_controller: '%kernel.debug%'
     filters:
         cssrewrite: ~
-
-# FOSUser Configuration
-fos_user:
-    db_driver: orm # other valid values are 'mongodb' and 'couchdb'
-    firewall_name: main
-    user_class: AppBundle\Entity\User
-    group:
-        group_class: AppBundle\Entity\Group
-    from_email:
-        address: correo@correo.com
-        sender_name: correo

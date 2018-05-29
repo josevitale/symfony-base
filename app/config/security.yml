@@ -1,14 +1,17 @@
 security:
     encoders:
-        FOS\UserBundle\Model\UserInterface: bcrypt
+        AppBundle\Entity\Usuario:
+            algorithm: bcrypt
 
     role_hierarchy:
         ROLE_ADMIN:       ROLE_USER
         ROLE_SUPER_ADMIN: ROLE_ADMIN
 
     providers:
-        fos_userbundle:
-            id: fos_user.user_provider.username
+        db_provider:
+            entity:
+                class: AppBundle\Entity\Usuario
+                property: username
 
     firewalls:
         dev:
@@ -28,5 +31,4 @@ security:
 
     access_control:
         - { path: ^/login$, role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/users, role: IS_AUTHENTICATED_FULLY }
-        - { path: ^/groups, role: IS_AUTHENTICATED_FULLY }
+        - { path: ^/usuarios, role: IS_AUTHENTICATED_FULLY }

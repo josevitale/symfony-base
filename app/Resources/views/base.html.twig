@@ -33,12 +33,12 @@
                     <li class="dropdown">
                       <a id="base_logged_in_as" href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ 'security.logged_in_as'|trans({'%username%': app.user.username}) }} <span class="caret"></span></a>
                       <ul class="dropdown-menu">
-                        <li><a id="base_user_edit" href="{{ path('user_edit', { 'id': app.user.id }) }}">{{ 'user.edit.titulo'|trans }}</a></li>
+                        <li><a id="base_usuario_edit" href="{{ path('usuario_edit', { 'id': app.user.id }) }}">{{ 'usuario.edit.titulo'|trans }}</a></li>
                         <li><a id="base_security_logout" href="{{ path('security_logout') }}">{{ 'security.logout'|trans }}</a></li>
                       </ul>
                     </li>
                 {% else %}
-                    <li><a id="base_user_login" href="{{ path('security_login') }}">{{ 'security.login'|trans }}</a></li>
+                    <li><a id="base_usuario_login" href="{{ path('security_login') }}">{{ 'security.login'|trans }}</a></li>
                 {% endif %}
               </ul>
             </div>

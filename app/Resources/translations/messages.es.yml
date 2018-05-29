@@ -19,27 +19,7 @@ security:
     login: Ingresar
     logout: Salir
 
-group:
-    new:
-        titulo: 'Nuevo grupo'
-        grupo_creado: 'Grupo creado'
-    edit:
-        titulo: 'Modificar grupo'
-        grupo_modificado: 'Grupo modificado'
-    show:
-        titulo: 'Grupo'
-    remove:
-        titulo: 'Eliminar grupo'
-        grupo_eliminado: 'Grupo eliminado'
-        advertencia: '¡Atención! Se eliminará al grupo "%name%" del sistema. ¿Desea continuar?'
-    list:
-        titulo: 'Grupos'
-        id: 'Id'
-        name: 'Nombre'
-    type:
-        name: 'Nombre de grupo'
-
-user:
+usuario:
     new:
         titulo: 'Nuevo usuario'
         usuario_creado: 'Usuario creado'
