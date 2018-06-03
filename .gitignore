@@ -1,23 +1,25 @@
-/app/config/parameters.yml
-/build/
-/phpunit.xml
-/node_modules/
-/var/*
-!/var/cache
-/var/cache/*
-!var/cache/.gitkeep
-!/var/data
-/var/data/*
-!var/data/.gitkeep
-!/var/logs
-/var/logs/*
-!var/logs/.gitkeep
-!/var/sessions
-/var/sessions/*
-!var/sessions/.gitkeep
-!var/SymfonyRequirements.php
+###> symfony/framework-bundle ###
+/.env
+/public/bundles/
+/var/
 /vendor/
-/web/bundles/
+###< symfony/framework-bundle ###
+
+###> symfony/webpack-encore-pack ###
+/node_modules/
+/public/build/
+npm-debug.log
+yarn-error.log
+###< symfony/webpack-encore-pack ###
+
+###> symfony/phpunit-bridge ###
+.phpunit
+/phpunit.xml
+###< symfony/phpunit-bridge ###
+
+###> symfony/web-server-bundle ###
+/.web-server-pid
+###< symfony/web-server-bundle ###
 
 # -- Editores -----------------------------------------
 # vim
@@ -87,30 +89,3 @@ Icon
 ._*
 .Spotlight-V100
 .Trashes
-
-# -- Base Symfony --------------------------------------
-/web/js/base.js
-/web/css/base.css
-
-# JQuery
-/web/js/jquery.min.js
-
-# JQuery UI
-/web/js/jquery-ui.min.js
-/web/css/jquery-ui.min.css
-/web/css/images/ui-bg_flat_0_aaaaaa_40x100.png
-/web/css/images/ui-icons_444444_256x240.png
-/web/css/images/ui-icons_555555_256x240.png
-/web/css/images/ui-icons_777620_256x240.png
-/web/css/images/ui-icons_777777_256x240.png
-/web/css/images/ui-icons_cc0000_256x240.png
-/web/css/images/ui-icons_ffffff_256x240.png
-
-# Bootstrap
-/web/js/bootstrap.min.js
-/web/css/bootstrap.min.css
-/web/fonts/glyphicons-halflings-regular.eot
-/web/fonts/glyphicons-halflings-regular.svg
-/web/fonts/glyphicons-halflings-regular.ttf
-/web/fonts/glyphicons-halflings-regular.woff
-/web/fonts/glyphicons-halflings-regular.woff2

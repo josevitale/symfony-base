@@ -1,0 +1,39 @@
+usuario_list:
+    path:     /
+    controller: App\Controller\UsuarioController::list
+    methods:  [GET]
+
+usuario_new:
+    path:     /new
+    controller: App\Controller\UsuarioController::new
+    methods:  [GET]
+
+usuario_create:
+    path:     /create
+    controller: App\Controller\UsuarioController::create
+    methods:  [POST]
+
+usuario_show:
+    path:     /{id}
+    controller: App\Controller\UsuarioController::show
+    methods:  [GET]
+
+usuario_edit:
+    path:     /{id}/edit
+    controller: App\Controller\UsuarioController::edit
+    methods:  [GET]
+
+usuario_update:
+    path:     /{id}
+    controller: App\Controller\UsuarioController::update
+    methods:  [PUT]
+
+usuario_remove:
+    path:     /{id}/remove
+    controller: App\Controller\UsuarioController::remove
+    methods:  [GET]
+
+usuario_delete:
+    path:     /{id}
+    controller: App\Controller\UsuarioController::delete
+    methods:  [DELETE]

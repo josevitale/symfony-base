@@ -1,0 +1,9 @@
+default:
+    resource: "routes/default.yaml"
+
+security:
+    resource: "routes/security.yaml"
+
+usuarios:
+    resource: "routes/usuario.yaml"
+    prefix: /usuarios

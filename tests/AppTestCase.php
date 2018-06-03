@@ -1,12 +1,12 @@
 <?php
 
-namespace Tests;
+namespace App\Tests;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\BrowserKit\Cookie;
 use Symfony\Component\BrowserKit\Client;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
-use AppBundle\Entity\Usuario;
+use App\Entity\Usuario;
 
 class AppTestCase extends WebTestCase
 {
@@ -51,7 +51,7 @@ class AppTestCase extends WebTestCase
     protected function eliminarUsuario($username)
     {
         $em = $this->client->getContainer()->get('doctrine')->getManager();
-        $usuario = $em->getRepository('AppBundle:Usuario')->findOneByUsername($username);
+        $usuario = $em->getRepository('App:Usuario')->findOneByUsername($username);
         $em->remove($usuario);
         $em->flush();
     }
@@ -60,7 +60,7 @@ class AppTestCase extends WebTestCase
     {
         $session = $this->client->getContainer()->get('session');
         $em = $this->client->getContainer()->get('doctrine')->getManager();
-        $usuario = $em->getRepository('AppBundle:Usuario')->findOneByUsername('test');
+        $usuario = $em->getRepository('App:Usuario')->findOneByUsername('test');
 
         $token = new UsernamePasswordToken($usuario, null, 'main', $roles);
         $session->set('_security_main', serialize($token));
