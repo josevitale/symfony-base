@@ -129,6 +129,10 @@ class UsuarioController extends Controller
 
         if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
+            $password = $this->get('security.password_encoder')
+                ->encodePassword($usuario, $usuario->getPlainPassword());
+            $usuario->setPassword($password);
+            $em->persist($usuario);
             $em->flush();
             $translator = $this->get('translator');
             $response = new ResponseData();
