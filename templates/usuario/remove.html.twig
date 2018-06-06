@@ -5,7 +5,7 @@
     <div class="alert alert-warning" role="alert">
         <strong>{{ 'usuario.remove.advertencia'|trans({'%username%': usuario.username}) }}</strong>
     </div>
-    {{ form_start(form, {'action': path('usuario_delete', { 'id': usuario.id }), 'method': 'DELETE', 'attr': {'class': 'form-horizontal'}}) }}
+    {{ form_start(form, {'action': path('usuario_delete', { 'id': usuario.id }), 'attr': {'class': 'form-horizontal'}}) }}
         <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10">
                 <button id="usuario_remove_aceptar" type="submit" class="btn btn-danger">{{ 'general.submit'|trans }}</button>

@@ -2,7 +2,7 @@
 
 {% block contenido %}
     <h1 id="usuario_edit_titulo">{{ 'usuario.edit.titulo'|trans }}</h1>
-    {{ form_start(form, {'action': path('usuario_update', { 'id': usuario.id }), 'method': 'PUT', 'attr': {'class': 'form-horizontal'}}) }}
+    {{ form_start(form, {'action': path('usuario_update', { 'id': usuario.id }), 'attr': {'class': 'form-horizontal'}}) }}
         <div class="form-group">
             {{ form_label(form.email, 'usuario.type.email'|trans, {'label_attr': {'class': 'col-sm-2 control-label'}}) }}
             <div class="col-sm-10">
