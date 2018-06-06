@@ -11,7 +11,7 @@ use App\Response\ResponseData;
 use App\Response\ResponseError;
 use App\Response\ResponseMensaje;
 
-class UsuarioController extends Controller
+class UsuarioController extends BaseController
 {
 
     public function list()
@@ -39,8 +39,8 @@ class UsuarioController extends Controller
         }
 
         $usuario = new Usuario();
-        $form = $this->createForm(UsuarioType::class, $usuario);
-        $form->handleRequest($request);
+        $form = $this->crearForm(UsuarioType::class, $usuario, array('method' => 'POST'), $request);
+        $form = $this->procesarForm($form, $request);
 
         $response = new ResponseData();
         $response->setForm($form);
@@ -55,10 +55,9 @@ class UsuarioController extends Controller
 
             throw new ErrorException($error);
         }
-
         $usuario = new Usuario();
-        $form = $this->createForm(UsuarioType::class, $usuario);
-        $form->handleRequest($request);
+        $form = $this->crearForm(UsuarioType::class, $usuario, array('method' => 'POST'), $request);
+        $form = $this->procesarForm($form, $request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
@@ -102,10 +101,8 @@ class UsuarioController extends Controller
             throw new ErrorException($error);
         }
 
-        $form = $this->createForm(UsuarioType::class, $usuario, array(
-            'method' => 'PUT',
-        ));
-        $form->handleRequest($request);
+        $form = $this->crearForm(UsuarioType::class, $usuario, array('method' => 'PUT'), $request);
+        $form = $this->procesarForm($form, $request);
         $response = new ResponseData(array(
             'usuario' => $usuario,
         ));
@@ -121,11 +118,8 @@ class UsuarioController extends Controller
 
             throw new ErrorException($error);
         }
-
-        $form = $this->createForm(UsuarioType::class, $usuario, array(
-            'method' => 'PUT',
-        ));
-        $form->handleRequest($request);
+        $form = $this->crearForm(UsuarioType::class, $usuario, array('method' => 'PUT'), $request);
+        $form = $this->procesarForm($form, $request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
@@ -173,21 +167,12 @@ class UsuarioController extends Controller
 
             throw new ErrorException($error);
         }
-
-        $form = $this->createFormBuilder()->setMethod('DELETE')->getForm();
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->remove($usuario);
-            $em->flush();
-            $translator = $this->get('translator');
-            $response = new ResponseData(array(), 204);
-            $response->addMensaje(ResponseMensaje::SUCCESS, $translator->trans('usuario.remove.usuario_eliminado'));
-        }
-        else {
-            $response = new ResponseError(400, ResponseError::ERROR_VALIDACION);
-        }
+        $em = $this->getDoctrine()->getManager();
+        $em->remove($usuario);
+        $em->flush();
+        $translator = $this->get('translator');
+        $response = new ResponseData(array(), 204);
+        $response->addMensaje(ResponseMensaje::SUCCESS, $translator->trans('usuario.remove.usuario_eliminado'));
         $response->redirect($this->generateUrl('usuario_list'));
 
         return $response;
