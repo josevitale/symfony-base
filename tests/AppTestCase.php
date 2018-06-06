@@ -56,7 +56,7 @@ class AppTestCase extends WebTestCase
         $em->flush();
     }
 
-    public function logIn(array $roles = array('ROLE_ADMIN'))
+    public function logInWeb(array $roles = array('ROLE_ADMIN'))
     {
         $session = $this->client->getContainer()->get('session');
         $em = $this->client->getContainer()->get('doctrine')->getManager();
@@ -68,5 +68,20 @@ class AppTestCase extends WebTestCase
 
         $cookie = new Cookie($session->getName(), $session->getId());
         $this->client->getCookieJar()->set($cookie);
+    }
+
+    public function logInJson()
+    {
+        $data = json_encode(array(
+            '_username' => 'test',
+            '_password' => 'foo',
+        ));
+        $this->client->request('POST', '/login', array(), array(), array(
+            'CONTENT_TYPE' => 'application/json',
+            'HTTP_ACCEPT' => 'application/json',
+        ), $data);
+        $content = json_decode($this->client->getResponse()->getContent(), true);
+
+        return $content;
     }
 }

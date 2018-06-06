@@ -20,7 +20,7 @@ class UsuarioControllerTest extends AppTestCase
 
     public function testWebNew()
     {
-        $this->logIn();
+        $this->logInWeb();
         $crawler = $this->client->request('GET', '/usuarios/new');
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode(), "[GET /usuarios/new] StatusCode inesperado");
         $this->assertEquals(1, $crawler->filter('#usuario_new_titulo')->count(), "[GET /usuarios/new] Elemento html no encotrado: 'usuario_new_titulo'");
@@ -51,7 +51,7 @@ class UsuarioControllerTest extends AppTestCase
 
     public function testWebShow()
     {
-        $this->logIn();
+        $this->logInWeb();
         $em = $this->client->getContainer()->get('doctrine')->getManager();
         $testUsuario = $em->getRepository('App:Usuario')->findOneBy(array(
             'username' => 'WebTestUsuarioNew',
@@ -75,7 +75,7 @@ class UsuarioControllerTest extends AppTestCase
 
     public function testWebErrorCreateValidation()
     {
-        $this->logIn();
+        $this->logInWeb();
         $crawler = $this->client->request('GET', '/usuarios/new');
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode(), "[GET /usuarios/new] StatusCode inesperado");
         $form = $crawler->filter('#usuario_new_aceptar')->form();
@@ -90,7 +90,7 @@ class UsuarioControllerTest extends AppTestCase
 
     public function testWebList()
     {
-        $this->logIn();
+        $this->logInWeb();
         $crawler = $this->client->request('GET', '/usuarios/');
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode(), "[GET /usuarios/] StatusCode inesperado");
         $this->assertEquals(1, $crawler->filter('#usuario_list_titulo')->count(), "[GET /usuarios/] Elemento html no encotrado: 'usuario_list_titulo'");
@@ -114,7 +114,7 @@ class UsuarioControllerTest extends AppTestCase
 
     public function testWebEdit()
     {
-        $this->logIn();
+        $this->logInWeb();
         $em = $this->client->getContainer()->get('doctrine')->getManager();
         $testUsuario = $em->getRepository('App:Usuario')->findOneBy(array(
             'username' => 'WebTestUsuarioNew',
@@ -131,7 +131,7 @@ class UsuarioControllerTest extends AppTestCase
         $form['app_usuario[plainPassword][first]'] = 'WebTestUsuarioEdit';
         $form['app_usuario[plainPassword][second]'] = 'WebTestUsuarioEdit';
         $this->client->submit($form);
-        $this->assertEquals(302, $this->client->getResponse()->getStatusCode(), "[PUT /usuarios/update/{id}] StatusCode inesperado");
+        $this->assertEquals(302, $this->client->getResponse()->getStatusCode(), "[PUT /usuarios/{id}] StatusCode inesperado");
 
         $em = $this->client->getContainer()->get('doctrine')->getManager();
         $testUsuario = $em->getRepository('App:Usuario')->findOneBy(array(
@@ -149,7 +149,7 @@ class UsuarioControllerTest extends AppTestCase
 
     public function testWebRemove()
     {
-        $this->logIn();
+        $this->logInWeb();
         $em = $this->client->getContainer()->get('doctrine')->getManager();
         $testUsuario = $em->getRepository('App:Usuario')->findOneBy(array(
             'username' => 'WebTestUsuarioEdit',
@@ -178,7 +178,7 @@ class UsuarioControllerTest extends AppTestCase
 
     public function testWebErrorAccesoDenegado()
     {
-        $this->logIn(array('ROLE_USER'));
+        $this->logInWeb(array('ROLE_USER'));
         $crawler = $this->client->request('GET', '/usuarios/');
         $this->assertEquals(403, $this->client->getResponse()->getStatusCode(), "[GET /usuarios/] StatusCode inesperado");
         $this->assertEquals(1, $crawler->filter('#error_titulo')->count(), "[GET /usuarios/] Elemento html no encotrado: 'error_titulo'");
@@ -186,9 +186,130 @@ class UsuarioControllerTest extends AppTestCase
 
     public function testWebErrorNoEncontrado()
     {
-        $this->logIn();
+        $this->logInWeb();
         $crawler = $this->client->request('GET', '/usuarios/-1');
         $this->assertEquals(404, $this->client->getResponse()->getStatusCode(), "[GET /usuarios/-1] StatusCode inesperado");
         $this->assertEquals(1, $crawler->filter('#error_titulo')->count(), "[GET /usuarios/-1] Elemento html no encotrado: 'error_titulo'");
+    }
+
+    public function testJsonCreate()
+    {
+        $content = $this->logInJson();
+        $data = json_encode(array(
+            'email' => 'jsontestusuarionew@test',
+            'username' => 'JsonTestUsuarioNew',
+            'plainPassword' => array(
+                'first' => 'JsonTestUsuarioNew',
+                'second' => 'JsonTestUsuarioNew',
+            ),
+        ));
+        $this->client->request('POST', '/usuarios/create', array(), array(), array(
+            'HTTP_AUTHORIZATION' => $content['token'],
+            'CONTENT_TYPE' => 'application/json',
+            'HTTP_ACCEPT' => 'application/json',
+        ), $data);
+        $this->assertEquals(201, $this->client->getResponse()->getStatusCode());
+    }
+
+    public function testJsonShow()
+    {
+        $content = $this->logInJson();
+        $em = $this->client->getContainer()->get('doctrine')->getManager();
+        $testUsuario = $em->getRepository('App:Usuario')->findOneBy(array(
+            'username' => 'JsonTestUsuarioNew',
+        ));
+        $this->client->request('GET', '/usuarios/' . $testUsuario->getId(), array(), array(), array(
+            'HTTP_AUTHORIZATION' => $content['token'],
+            'HTTP_ACCEPT' => 'application/json',
+        ));
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode(), "[GET /usuarios/{id}] StatusCode inesperado");
+    }
+
+    public function testJsonErrorCreateValidation()
+    {
+        $content = $this->logInJson();
+        $data = json_encode(array(
+            'email' => 'jsontestusuarionew@test',
+            'username' => 'JsonTestUsuarioNew',
+            'plainPassword' => array(
+                'first' => 'JsonTestUsuarioNew',
+                'second' => 'JsonTestUsuarioNew',
+            ),
+        ));
+        $this->client->request('POST', '/usuarios/create', array(), array(), array(
+            'HTTP_AUTHORIZATION' => $content['token'],
+            'CONTENT_TYPE' => 'application/json',
+            'HTTP_ACCEPT' => 'application/json',
+        ), $data);
+        $this->assertEquals(400, $this->client->getResponse()->getStatusCode(), "[POST /usuarios/create] StatusCode inesperado");
+    }
+
+    public function testJsonList()
+    {
+        $content = $this->logInJson();
+        $this->client->request('GET', '/usuarios/', array(), array(), array(
+            'HTTP_AUTHORIZATION' => $content['token'],
+            'HTTP_ACCEPT' => 'application/json',
+        ));
+        $this->client->request('GET', '/usuarios/');
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode(), "[GET /usuarios/] StatusCode inesperado");
+    }
+
+    public function testWebUpdate()
+    {
+        $content = $this->logInJson();
+        $em = $this->client->getContainer()->get('doctrine')->getManager();
+        $testUsuario = $em->getRepository('App:Usuario')->findOneBy(array(
+            'username' => 'JsonTestUsuarioNew',
+        ));
+        $data = json_encode(array(
+            'email' => 'jsontestusuarioupdate@test',
+            'username' => 'JsonTestUsuarioUpdate',
+            'plainPassword' => array(
+                'first' => 'JsonTestUsuarioUpdate',
+                'second' => 'JsonTestUsuarioUpdate',
+            ),
+        ));
+        $this->client->request('PUT', '/usuarios/' . $testUsuario->getId(), array(), array(), array(
+            'HTTP_AUTHORIZATION' => $content['token'],
+            'CONTENT_TYPE' => 'application/json',
+            'HTTP_ACCEPT' => 'application/json',
+        ), $data);
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode(), "[PUT /usuarios/{id}] StatusCode inesperado");
+        $em = $this->client->getContainer()->get('doctrine')->getManager();
+        $testUsuario = $em->getRepository('App:Usuario')->findOneBy(array(
+            'username' => 'JsonTestUsuarioUpdate',
+        ));
+        $this->assertNotNull($testUsuario);
+    }
+
+    public function testJsonDelete()
+    {
+        $content = $this->logInJson();
+        $em = $this->client->getContainer()->get('doctrine')->getManager();
+        $testUsuario = $em->getRepository('App:Usuario')->findOneBy(array(
+            'username' => 'JsonTestUsuarioUpdate',
+        ));
+        $this->client->request('DELETE', '/usuarios/' . $testUsuario->getId(), array(), array(), array(
+            'HTTP_AUTHORIZATION' => $content['token'],
+            'HTTP_ACCEPT' => 'application/json',
+        ));
+        $this->assertEquals(204, $this->client->getResponse()->getStatusCode(), "[DELETE /usuarios/íd}] StatusCode inesperado");
+
+        $testUsuario = $em->getRepository('App:Usuario')->findOneBy(array(
+            'username' => 'JsonTestUsuarioUpdate',
+        ));
+        $this->assertNull($testUsuario);
+    }
+
+    public function testJsonErrorNoEncontrado()
+    {
+        $content = $this->logInJson();
+        $this->client->request('GET', '/usuarios/-1', array(), array(), array(
+            'HTTP_AUTHORIZATION' => $content['token'],
+            'HTTP_ACCEPT' => 'application/json',
+        ));
+        $this->client->request('GET', '/usuarios/-1');
+        $this->assertEquals(404, $this->client->getResponse()->getStatusCode(), "[GET /usuarios/-1] StatusCode inesperado");
     }
 }
